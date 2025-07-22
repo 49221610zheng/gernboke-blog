@@ -438,14 +438,68 @@ class ResponsiveNavigation {
   }
   
   // 初始化时添加样式
-  constructor() {
-    this.isMenuOpen = false;
-    this.currentSection = 'home';
-    this.scrollPosition = 0;
-    this.isScrollingDown = false;
-    this.lastScrollTop = 0;
-    this.addNavigationStyles();
-    this.init();
+  addNavigationStyles() {
+    if (document.getElementById('navigation-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'navigation-styles';
+    styles.textContent = `
+      .navbar {
+        transition: all 0.3s ease;
+      }
+
+      .navbar-scrolled {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-hidden {
+        transform: translateY(-100%);
+      }
+
+      .nav-link.active {
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .mobile-menu {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .mobile-menu.menu-open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu.menu-animated {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+
+      .breadcrumbs {
+        transition: all 0.3s ease;
+      }
+
+      .reading-progress {
+        transition: opacity 0.3s ease;
+      }
+
+      .reading-progress:hover {
+        transform: scale(1.1);
+      }
+
+      @media (max-width: 768px) {
+        .breadcrumbs {
+          display: none;
+        }
+      }
+    `;
+
+    document.head.appendChild(styles);
   }
 }
 

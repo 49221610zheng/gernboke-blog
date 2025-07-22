@@ -1,5 +1,5 @@
 // 主应用程序文件 - 前台功能
-import moduleLoader, { loadModule } from './utils/module-loader.js';
+// import moduleLoader, { loadModule } from './utils/module-loader.js';
 
 // 应用程序状态管理
 class App {

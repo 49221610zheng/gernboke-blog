@@ -455,16 +455,61 @@ class ImageOptimizer {
     document.head.appendChild(styles);
   }
   
-  constructor() {
-    this.imageCache = new Map();
-    this.loadingImages = new Set();
-    this.observerOptions = {
-      root: null,
-      rootMargin: '50px',
-      threshold: 0.1
-    };
-    this.addImageStyles();
-    this.init();
+  // 添加样式方法
+  addImageStyles() {
+    if (document.getElementById('image-optimizer-styles')) return;
+
+    const styles = document.createElement('style');
+    styles.id = 'image-optimizer-styles';
+    styles.textContent = `
+      .image-placeholder {
+        transition: opacity 0.3s ease;
+      }
+
+      .image-placeholder.image-error {
+        background-color: #fee2e2;
+        border: 2px dashed #fca5a5;
+      }
+
+      .progressive-loading {
+        filter: blur(5px);
+        transition: filter 0.3s ease;
+      }
+
+      .progressive-loaded {
+        filter: blur(0);
+      }
+
+      .image-modal {
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      img[data-modal] {
+        cursor: zoom-in;
+      }
+
+      .image-loaded {
+        animation: imageAppear 0.3s ease;
+      }
+
+      @keyframes imageAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    `;
+
+    document.head.appendChild(styles);
   }
 }
 
