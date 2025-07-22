@@ -37,27 +37,33 @@ class SecretAccess {
   
   handleKeyPress(e) {
     if (this.isLocked) return;
-    
+
     const now = Date.now();
-    
+
     // 检查时间窗口
     if (now - this.lastKeyTime > this.timeWindow) {
       this.sequence = [];
     }
-    
+
     this.lastKeyTime = now;
     this.sequence.push(e.code);
-    
+
+    // 调试信息
+    console.log('按键序列:', this.sequence.join(' '));
+    console.log('目标序列:', this.secretCode.join(' '));
+
     // 保持序列长度
     if (this.sequence.length > this.secretCode.length) {
       this.sequence.shift();
     }
-    
+
     // 检查是否匹配
     if (this.sequence.length === this.secretCode.length) {
       if (this.checkSequence()) {
+        console.log('✅ 秘密代码匹配成功！');
         this.grantAccess();
       } else {
+        console.log('❌ 秘密代码不匹配');
         this.handleFailedAttempt();
       }
       this.sequence = [];
@@ -148,16 +154,54 @@ class SecretAccess {
     this.attempts = 0;
     localStorage.removeItem('adminAttempts');
     localStorage.removeItem('adminLockout');
-    
+
     // 显示成功消息
     this.showAccessMessage('管理访问已授权', 'success');
-    
+
     // 延迟跳转到管理页面
     setTimeout(() => {
-      window.location.href = '/admin.html';
+      this.navigateToAdmin();
     }, 1000);
   }
-  
+
+  navigateToAdmin() {
+    // 多种路径尝试，确保在不同环境下都能正常工作
+    const possiblePaths = [
+      './admin.html',
+      'admin.html',
+      '/admin.html',
+      window.location.origin + '/admin.html',
+      window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/admin.html'
+    ];
+
+    console.log('尝试跳转路径:', possiblePaths);
+
+    // 首先尝试相对路径
+    let adminUrl = './admin.html';
+
+    // 如果是GitHub Pages，使用特定的路径构建
+    if (window.location.hostname.includes('github.io')) {
+      const pathParts = window.location.pathname.split('/');
+      if (pathParts.length > 2) {
+        // 格式: /username/repository-name/
+        adminUrl = `/${pathParts[1]}/${pathParts[2]}/admin.html`;
+      } else {
+        adminUrl = './admin.html';
+      }
+    }
+
+    console.log('最终跳转URL:', adminUrl);
+
+    // 尝试跳转
+    try {
+      window.location.href = adminUrl;
+    } catch (error) {
+      console.error('跳转失败:', error);
+      // 备用方法：在新窗口打开
+      window.open(adminUrl, '_blank');
+    }
+  }
+
   handleFailedAttempt() {
     this.attempts++;
     localStorage.setItem('adminAttempts', this.attempts.toString());
@@ -258,3 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 在控制台提供生成访问链接的方法
 window.generateAdminLink = SecretAccess.generateAccessLink;
+
+// 提供测试访问的方法
+window.testAdminAccess = function() {
+  const secretAccess = new SecretAccess();
+  secretAccess.grantAccess();
+};
+
+// 提供直接访问的方法（用于调试）
+window.directAdminAccess = function() {
+  const secretAccess = new SecretAccess();
+  secretAccess.navigateToAdmin();
+};
