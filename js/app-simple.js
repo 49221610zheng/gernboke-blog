@@ -94,6 +94,24 @@ class SimpleApp {
         this.components.contentInteractions = new ContentInteractions();
         console.log('✅ 内容交互初始化完成');
       }
+
+      // 初始化主页优化器
+      if (typeof HomepageOptimizer !== 'undefined') {
+        this.components.homepageOptimizer = new HomepageOptimizer();
+        console.log('✅ 主页优化器初始化完成');
+      }
+
+      // 初始化社交功能
+      if (typeof SocialFeatures !== 'undefined') {
+        this.components.socialFeatures = new SocialFeatures();
+        console.log('✅ 社交功能初始化完成');
+      }
+
+      // 初始化主题系统
+      if (typeof ThemeSystem !== 'undefined') {
+        this.components.themeSystem = new ThemeSystem();
+        console.log('✅ 主题系统初始化完成');
+      }
       
     } catch (error) {
       console.warn('⚠️ 部分组件初始化失败:', error);
