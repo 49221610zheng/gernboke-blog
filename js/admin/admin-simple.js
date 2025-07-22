@@ -224,20 +224,27 @@ class SimpleAdminMain {
     container.innerHTML = `
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-900">文章管理</h1>
-          <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            <i class="fas fa-plus mr-2"></i>新建文章
-          </button>
+          <h1 class="text-2xl font-bold text-gray-900">内容管理</h1>
+          <div class="flex gap-2">
+            <button onclick="simpleAdminMain.previewSite()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+              <i class="fas fa-eye mr-2"></i>预览网站
+            </button>
+            <button onclick="simpleAdminMain.publishSite()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              <i class="fas fa-upload mr-2"></i>发布更新
+            </button>
+          </div>
         </div>
 
         <div class="bg-white rounded-lg shadow">
-          <div class="p-6">
-            <p class="text-gray-600">文章管理功能正在开发中...</p>
-            <p class="text-sm text-gray-500 mt-2">您可以在这里管理所有文章内容</p>
-          </div>
+          ${this.getContentManager()}
         </div>
       </div>
     `;
+
+    // 初始化内容管理器
+    if (typeof ContentManager !== 'undefined') {
+      window.contentManager = new ContentManager();
+    }
   }
 
   // 显示摄影作品管理
@@ -328,6 +335,56 @@ class SimpleAdminMain {
         </div>
       </div>
     `;
+  }
+
+  // 获取内容管理器
+  getContentManager() {
+    if (typeof ContentManager !== 'undefined') {
+      const manager = new ContentManager();
+      return manager.getContentEditor();
+    }
+    return `
+      <div class="p-6 text-center">
+        <i class="fas fa-cog text-4xl text-gray-300 mb-4"></i>
+        <p class="text-gray-600">内容管理器加载中...</p>
+      </div>
+    `;
+  }
+
+  // 预览网站
+  previewSite() {
+    if (typeof PageGenerator !== 'undefined' && window.contentManager) {
+      const generator = new PageGenerator();
+      generator.previewPage(window.contentManager.content);
+    } else {
+      window.open('../index.html', '_blank');
+    }
+  }
+
+  // 发布网站
+  publishSite() {
+    if (typeof PageGenerator !== 'undefined' && window.contentManager) {
+      const generator = new PageGenerator();
+      generator.applyToCurrentPage(window.contentManager.content);
+      this.showMessage('网站更新已发布！', 'success');
+    } else {
+      this.showMessage('发布功能暂不可用', 'error');
+    }
+  }
+
+  // 显示消息
+  showMessage(message, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${
+      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    }`;
+    messageDiv.textContent = message;
+
+    document.body.appendChild(messageDiv);
+
+    setTimeout(() => {
+      messageDiv.remove();
+    }, 3000);
   }
 
   // 显示错误
