@@ -29,7 +29,8 @@
       "test-runner-simple.js",
       "website-accessibility-test.js",
       "deployment-status.html",
-      "trigger.txt"
+      "trigger.txt",
+      "SECURITY_GUIDE.md"
     ],
     "rewrites": [
       {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
     // Firebase SDK 将在模块中导入
     import './js/firebase-config.js';
   </script>
-  
+
   <!-- Tailwind 配置 -->
   <script>
     tailwind.config = {
@@ -37,7 +38,7 @@
       }
     }
   </script>
-  
+
   <!-- 自定义样式 -->
   <style type="text/tailwindcss">
     @layer utilities {
@@ -74,7 +75,8 @@
 
 <body class="font-inter bg-gray-50 text-dark min-h-screen flex overflow-hidden">
   <!-- 侧边栏 -->
-  <aside class="w-64 bg-white shadow-sm h-screen flex-shrink-0 hidden md:block transition-all duration-300 ease-in-out" id="sidebar">
+  <aside class="w-64 bg-white shadow-sm h-screen flex-shrink-0 hidden md:block transition-all duration-300 ease-in-out"
+    id="sidebar">
     <div class="p-5 border-b">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
@@ -83,7 +85,7 @@
         <h1 class="text-xl font-bold">创作者后台</h1>
       </div>
     </div>
-    
+
     <nav class="p-4">
       <div class="space-y-1">
         <a href="#dashboard" class="sidebar-item active" data-target="dashboard-view">
@@ -111,7 +113,7 @@
           <span>数据统计</span>
         </a>
       </div>
-      
+
       <div class="mt-8 pt-6 border-t">
         <div class="space-y-1">
           <a href="#settings" class="sidebar-item" data-target="settings-view">
@@ -126,7 +128,7 @@
       </div>
     </nav>
   </aside>
-  
+
   <!-- 主内容区 -->
   <main class="flex-1 flex flex-col overflow-hidden">
     <!-- 顶部导航 -->
@@ -136,18 +138,21 @@
           <i class="fa fa-bars text-xl"></i>
         </button>
         <div class="relative">
-          <input type="text" placeholder="搜索..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-64">
+          <input type="text" placeholder="搜索..."
+            class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-64">
           <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
       </div>
-      
+
       <div class="flex items-center gap-6">
         <button class="relative text-gray-600 hover:text-primary transition-colors">
           <i class="fa fa-bell-o text-xl"></i>
-          <span class="absolute -top-1 -right-1 w-4 h-4 bg-danger rounded-full text-white text-xs flex items-center justify-center">3</span>
+          <span
+            class="absolute -top-1 -right-1 w-4 h-4 bg-danger rounded-full text-white text-xs flex items-center justify-center">3</span>
         </button>
         <div class="flex items-center gap-3">
-          <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary/20">
+          <img src="https://picsum.photos/id/64/40/40" alt="用户头像"
+            class="w-8 h-8 rounded-full object-cover border-2 border-primary/20">
           <div class="hidden md:block">
             <p class="font-medium">摄影程序员</p>
             <p class="text-xs text-gray-medium">管理员</p>
@@ -155,7 +160,7 @@
         </div>
       </div>
     </header>
-    
+
     <!-- 内容区域 -->
     <div class="flex-1 overflow-y-auto p-6 bg-gray-50" id="content-area">
       <!-- 仪表盘视图 -->
@@ -176,7 +181,7 @@
             </button>
           </div>
         </div>
-        
+
         <!-- 统计卡片 -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <div class="card">
@@ -193,7 +198,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="flex justify-between items-start">
               <div>
@@ -208,7 +213,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="flex justify-between items-start">
               <div>
@@ -223,7 +228,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="flex justify-between items-start">
               <div>
@@ -239,7 +244,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- 图表和最近内容 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="card lg:col-span-2">
@@ -255,7 +260,7 @@
               <canvas id="visitors-chart"></canvas>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="flex justify-between items-center mb-6">
               <h3 class="font-bold text-lg">内容分类占比</h3>
@@ -291,7 +296,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- 最近活动 -->
         <div class="mt-6">
           <div class="card">
@@ -368,7 +373,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 文章管理视图 -->
       <div class="view hidden" id="articles-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -387,11 +392,12 @@
                 <option>已发布</option>
                 <option>草稿</option>
               </select>
-              <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+              <i
+                class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
             </div>
           </div>
         </div>
-        
+
         <div class="card">
           <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div class="relative w-full md:w-64">
@@ -400,35 +406,44 @@
             </div>
             <div class="flex gap-2 flex-wrap">
               <button class="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">全部类型</button>
-              <button class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-primary/10 hover:text-primary">技术文章</button>
-              <button class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-primary/10 hover:text-primary">开发日记</button>
+              <button
+                class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-primary/10 hover:text-primary">技术文章</button>
+              <button
+                class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-primary/10 hover:text-primary">开发日记</button>
             </div>
           </div>
-          
+
           <!-- 文章列表容器 -->
           <div id="articles-list" class="space-y-4">
             <!-- 动态加载的文章列表将在这里显示 -->
           </div>
-          
+
           <div class="flex justify-between items-center mt-6">
             <p class="text-sm text-gray-medium">显示 1 到 4，共 42 条记录</p>
             <div class="flex gap-1">
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary disabled:opacity-50" disabled>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary disabled:opacity-50"
+                disabled>
                 <i class="fa fa-chevron-left text-xs"></i>
               </button>
               <button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white">1</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">2</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">3</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">...</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">11</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary">
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">2</button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">3</button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">...</button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">11</button>
+              <button
+                class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary">
                 <i class="fa fa-chevron-right text-xs"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- 摄影作品视图 -->
       <div class="view hidden" id="photography-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -449,14 +464,17 @@
                 <option>人像摄影</option>
                 <option>街头摄影</option>
               </select>
-              <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+              <i
+                class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
             </div>
           </div>
         </div>
-        
+
         <!-- 作品上传区域 -->
         <div class="card mb-6">
-          <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer" id="drop-area">
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer"
+            id="drop-area">
             <div class="flex flex-col items-center">
               <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4">
                 <i class="fa fa-cloud-upload text-2xl"></i>
@@ -470,130 +488,155 @@
             </div>
           </div>
         </div>
-        
+
         <!-- 作品网格 -->
         <div id="photography-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <!-- 作品项 1 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/29/600/400" alt="城市夜景摄影" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/29/600/400" alt="城市夜景摄影"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">城市夜景</h3>
             <p class="text-sm text-gray-medium">2023-06-10 · 城市摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
-          
+
           <!-- 作品项 2 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/15/600/400" alt="山间湖泊风光" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/15/600/400" alt="山间湖泊风光"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">山间湖泊</h3>
             <p class="text-sm text-gray-medium">2023-06-05 · 风光摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
-          
+
           <!-- 作品项 3 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/1062/600/400" alt="街头行人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/1062/600/400" alt="街头行人"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">街头瞬间</h3>
             <p class="text-sm text-gray-medium">2023-05-28 · 街头摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
-          
+
           <!-- 作品项 4 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/64/600/400" alt="人像摄影作品" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/64/600/400" alt="人像摄影作品"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">窗边人像</h3>
             <p class="text-sm text-gray-medium">2023-05-15 · 人像摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
-          
+
           <!-- 作品项 5 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/110/600/400" alt="建筑摄影" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/110/600/400" alt="建筑摄影"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">现代建筑</h3>
             <p class="text-sm text-gray-medium">2023-05-10 · 建筑摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
-          
+
           <!-- 作品项 6 -->
           <div class="card group relative overflow-hidden">
             <div class="aspect-[4/3] overflow-hidden rounded-lg mb-3">
-              <img src="https://picsum.photos/id/137/600/400" alt="自然风光" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <img src="https://picsum.photos/id/137/600/400" alt="自然风光"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
             </div>
             <h3 class="font-medium truncate">沙漠日落</h3>
             <p class="text-sm text-gray-medium">2023-05-05 · 风光摄影</p>
             <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-primary backdrop-blur-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
+              <button
+                class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white hover:text-danger backdrop-blur-sm">
                 <i class="fa fa-trash-o"></i>
               </button>
             </div>
           </div>
         </div>
-        
+
         <!-- 分页 -->
         <div class="flex justify-center mt-8">
           <div class="flex gap-1">
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary disabled:opacity-50" disabled>
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary disabled:opacity-50"
+              disabled>
               <i class="fa fa-chevron-left text-xs"></i>
             </button>
             <button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">2</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">3</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">...</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">8</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary">
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">2</button>
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">3</button>
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">...</button>
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:border-primary hover:text-primary">8</button>
+            <button
+              class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-medium hover:border-primary hover:text-primary">
               <i class="fa fa-chevron-right text-xs"></i>
             </button>
           </div>
         </div>
       </div>
-      
+
       <!-- 其他视图（分类、评论、统计等）结构类似，此处省略 -->
       <div class="view hidden" id="categories-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -606,7 +649,7 @@
             <span>添加分类</span>
           </button>
         </div>
-        
+
         <div class="card">
           <!-- 分类管理内容 -->
           <div class="p-8 text-center text-gray-medium">
@@ -615,7 +658,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="view hidden" id="comments-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
@@ -623,7 +666,7 @@
             <p class="text-gray-medium">查看和回复用户评论</p>
           </div>
         </div>
-        
+
         <div class="card">
           <!-- 评论管理内容 -->
           <div class="p-8 text-center text-gray-medium">
@@ -632,7 +675,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="view hidden" id="analytics-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
@@ -640,7 +683,7 @@
             <p class="text-gray-medium">查看博客访问和内容数据</p>
           </div>
         </div>
-        
+
         <div class="card">
           <!-- 数据统计内容 -->
           <div class="p-8 text-center text-gray-medium">
@@ -649,7 +692,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="view hidden" id="settings-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
@@ -657,7 +700,7 @@
             <p class="text-gray-medium">配置博客系统参数</p>
           </div>
         </div>
-        
+
         <div class="card">
           <!-- 系统设置内容 -->
           <div class="p-8 text-center text-gray-medium">
@@ -666,7 +709,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="view hidden" id="profile-view">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
@@ -674,7 +717,7 @@
             <p class="text-gray-medium">编辑你的个人信息</p>
           </div>
         </div>
-        
+
         <div class="card">
           <!-- 个人资料内容 -->
           <div class="p-8 text-center text-gray-medium">
@@ -685,7 +728,7 @@
       </div>
     </div>
   </main>
-  
+
   <!-- 添加文章模态框 -->
   <div class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center" id="article-modal">
     <div class="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -695,7 +738,7 @@
           <i class="fa fa-times text-xl"></i>
         </button>
       </div>
-      
+
       <div class="p-5">
         <form id="article-form" data-mode="create">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
@@ -716,7 +759,7 @@
             <label class="block text-sm font-medium mb-1">文章摘要</label>
             <textarea id="article-excerpt" class="form-input" rows="3" placeholder="输入文章摘要，用于SEO和列表展示"></textarea>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
             <div>
               <label class="block text-sm font-medium mb-1">所属分类</label>
@@ -741,15 +784,17 @@
               <input type="date" id="article-date" class="form-input">
             </div>
           </div>
-          
+
           <div class="mb-5">
             <label class="block text-sm font-medium mb-1">文章缩略图</label>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer">
-              <img src="https://picsum.photos/id/20/400/200" alt="文章缩略图预览" class="w-full h-40 object-cover rounded-md mb-2">
+            <div
+              class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer">
+              <img src="https://picsum.photos/id/20/400/200" alt="文章缩略图预览"
+                class="w-full h-40 object-cover rounded-md mb-2">
               <p class="text-sm text-gray-medium">点击更换缩略图</p>
             </div>
           </div>
-          
+
           <div class="mb-5">
             <label class="block text-sm font-medium mb-1">文章内容</label>
             <div class="border border-gray-300 rounded-lg overflow-hidden">
@@ -769,9 +814,10 @@
                 <span class="h-4 border-r border-gray-300 mx-1"></span>
                 <button class="p-1.5 rounded hover:bg-gray-200" title="预览"><i class="fa fa-eye"></i></button>
               </div>
-              
+
               <!-- 编辑器内容区 -->
-              <textarea id="article-content" class="w-full min-h-[300px] p-4 focus:outline-none" placeholder="请输入文章内容...可以使用Markdown格式或富文本编辑" required></textarea>
+              <textarea id="article-content" class="w-full min-h-[300px] p-4 focus:outline-none"
+                placeholder="请输入文章内容...可以使用Markdown格式或富文本编辑" required></textarea>
             </div>
           </div>
 
@@ -780,7 +826,7 @@
             <input type="text" id="article-tags" class="form-input" placeholder="输入标签，用逗号分隔">
             <p class="text-xs text-gray-medium mt-1">例如：Python, 摄影, 前端开发</p>
           </div>
-          
+
           <div class="flex justify-end gap-3 mt-6">
             <button type="button" class="btn btn-outline" id="cancel-article">取消</button>
             <button type="submit" class="btn btn-primary">保存文章</button>
@@ -789,7 +835,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 上传摄影作品模态框 -->
   <div class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center" id="photo-modal">
     <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -799,7 +845,7 @@
           <i class="fa fa-times text-xl"></i>
         </button>
       </div>
-      
+
       <div class="p-5">
         <form id="photo-form" data-mode="create">
           <div class="mb-5">
@@ -833,10 +879,11 @@
               <input type="date" id="photo-date" class="form-input">
             </div>
           </div>
-          
+
           <div class="mb-5">
             <label class="block text-sm font-medium mb-1">作品图片</label>
-            <div id="drop-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
+            <div id="drop-area"
+              class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
               <div id="image-preview" class="hidden"></div>
               <div id="upload-prompt">
                 <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-4"></i>
@@ -875,18 +922,18 @@
               <input type="text" class="form-input" placeholder="例如：24mm">
             </div>
           </div>
-          
+
           <div class="mb-5">
             <label class="block text-sm font-medium mb-1">作品描述</label>
             <textarea class="form-input min-h-[100px]" placeholder="描述拍摄背景、技巧或心得..."></textarea>
           </div>
-          
+
           <div class="mb-5">
             <label class="block text-sm font-medium mb-1">标签</label>
             <input type="text" class="form-input" placeholder="输入标签，用逗号分隔">
             <p class="text-xs text-gray-medium mt-1">例如：风光, 长曝光, 夜景</p>
           </div>
-          
+
           <div class="flex justify-end gap-3 mt-6">
             <button type="button" class="btn btn-outline" id="cancel-photo">取消</button>
             <button type="submit" class="btn btn-primary">保存作品</button>
@@ -895,11 +942,11 @@
       </div>
     </div>
   </div>
-  
+
   <!-- JavaScript -->
   <script>
     // 初始化图表
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // 访问趋势图表
       const visitorsCtx = document.getElementById('visitors-chart');
       if (visitorsCtx) {
@@ -961,7 +1008,11 @@
     });
   </script>
 
+  <!-- 安全认证系统 -->
+  <script src="js/security/admin-auth.js"></script>
+
   <!-- 管理后台应用 -->
   <script type="module" src="js/admin.js"></script>
 </body>
+
 </html>

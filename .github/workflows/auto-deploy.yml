@@ -28,14 +28,18 @@ jobs:
 
     - name: Deploy to Firebase
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/service-account.json
         FIREBASE_PROJECT_ID: gernboke
       run: |
         echo "🚀 Deploying to Firebase project: $FIREBASE_PROJECT_ID"
+        if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ]; then
+          echo "❌ FIREBASE_SERVICE_ACCOUNT secret not found"
+          echo "Please add the Firebase service account JSON to GitHub Secrets"
+          exit 1
+        fi
         echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > service-account.json
         export GOOGLE_APPLICATION_CREDENTIALS="service-account.json"
         firebase use $FIREBASE_PROJECT_ID
-        firebase deploy --only hosting
+        firebase deploy --only hosting --debug
 
     - name: Deploy Status
       run: |

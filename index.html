@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
     // Firebase SDK 将在模块中导入
     import './js/firebase-config.js';
   </script>
-  
+
   <!-- Tailwind 配置 -->
   <script>
     tailwind.config = {
@@ -34,7 +35,7 @@
       }
     }
   </script>
-  
+
   <!-- 自定义样式 -->
   <style type="text/tailwindcss">
     @layer utilities {
@@ -73,11 +74,13 @@
       }
     }
   </style>
-  
+
   <!-- 字体引入 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 </head>
 
 <body class="font-sans bg-light text-dark">
@@ -92,7 +95,7 @@
           </div>
           <span class="text-xl font-bold font-display">光影与代码</span>
         </a>
-        
+
         <!-- 桌面导航 -->
         <nav class="hidden md:flex items-center gap-6">
           <a href="#home" class="nav-link">首页</a>
@@ -100,19 +103,16 @@
           <a href="#tech" class="nav-link">技术分享</a>
           <a href="#diary" class="nav-link">开发日记</a>
           <a href="#about" class="nav-link">关于我</a>
-          <a href="/admin" class="btn-primary text-sm flex items-center gap-1">
-            <i class="fa fa-sign-in"></i>
-            <span>管理后台</span>
-          </a>
+          <!-- 管理入口已隐藏 -->
         </nav>
-        
+
         <!-- 移动端菜单按钮 -->
         <button class="md:hidden text-dark hover:text-primary" id="menu-toggle">
           <i class="fa fa-bars text-2xl"></i>
         </button>
       </div>
     </div>
-    
+
     <!-- 移动端导航菜单 -->
     <div class="md:hidden hidden bg-white border-t" id="mobile-menu">
       <div class="container mx-auto px-4 py-3 flex flex-col gap-3">
@@ -121,9 +121,7 @@
         <a href="#tech" class="py-2 hover:text-primary transition-colors">技术分享</a>
         <a href="#diary" class="py-2 hover:text-primary transition-colors">开发日记</a>
         <a href="#about" class="py-2 hover:text-primary transition-colors">关于我</a>
-        <a href="/admin" class="btn-primary text-center w-full">
-          <i class="fa fa-sign-in mr-1"></i>管理后台
-        </a>
+        <!-- 移动端管理入口已隐藏 -->
       </div>
     </div>
   </header>
@@ -145,16 +143,19 @@
                 <i class="fa fa-camera"></i>
                 <span>浏览摄影作品</span>
               </a>
-              <a href="#tech" class="border border-gray-300 px-5 py-2.5 rounded-lg hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+              <a href="#tech"
+                class="border border-gray-300 px-5 py-2.5 rounded-lg hover:border-primary hover:text-primary transition-all flex items-center gap-2">
                 <i class="fa fa-code"></i>
                 <span>查看技术文章</span>
               </a>
             </div>
-            
+
             <div class="mt-12 flex items-center gap-6">
               <div class="flex -space-x-3">
-                <img src="https://picsum.photos/id/64/100/100" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
-                <div class="w-10 h-10 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-primary font-medium">
+                <img src="https://picsum.photos/id/64/100/100" alt="用户头像"
+                  class="w-10 h-10 rounded-full border-2 border-white">
+                <div
+                  class="w-10 h-10 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-primary font-medium">
                   +5
                 </div>
               </div>
@@ -171,14 +172,16 @@
               </div>
             </div>
           </div>
-          
+
           <div class="order-1 lg:order-2 relative">
             <div class="aspect-square max-w-lg mx-auto relative">
-              <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-3xl transform rotate-3"></div>
+              <div
+                class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-3xl transform rotate-3">
+              </div>
               <div class="absolute inset-2 bg-white rounded-3xl overflow-hidden shadow-xl">
                 <img src="https://picsum.photos/id/29/800/800" alt="摄影作品展示" class="w-full h-full object-cover">
               </div>
-              
+
               <!-- 浮动元素 -->
               <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg max-w-[180px] card-hover">
                 <div class="flex items-center gap-2 mb-2">
@@ -191,7 +194,7 @@
                   <div class="bg-green-500 h-full rounded-full" style="width: 85%"></div>
                 </div>
               </div>
-              
+
               <div class="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg max-w-[160px] card-hover">
                 <div class="flex items-center gap-2 mb-2">
                   <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
@@ -208,37 +211,41 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 特色分类 -->
     <section class="py-12 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div class="bg-light rounded-xl p-6 text-center card-hover">
-            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4">
+            <div
+              class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4">
               <i class="fa fa-mountain text-2xl"></i>
             </div>
             <h3 class="font-medium mb-1">风光摄影</h3>
             <p class="text-sm text-gray-medium">42 作品</p>
           </div>
-          
+
           <div class="bg-light rounded-xl p-6 text-center card-hover">
-            <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mx-auto mb-4">
+            <div
+              class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center text-secondary mx-auto mb-4">
               <i class="fa fa-building-o text-2xl"></i>
             </div>
             <h3 class="font-medium mb-1">城市夜景</h3>
             <p class="text-sm text-gray-medium">36 作品</p>
           </div>
-          
+
           <div class="bg-light rounded-xl p-6 text-center card-hover">
-            <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mx-auto mb-4">
+            <div
+              class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mx-auto mb-4">
               <i class="fa fa-code text-2xl"></i>
             </div>
             <h3 class="font-medium mb-1">技术分享</h3>
             <p class="text-sm text-gray-medium">28 文章</p>
           </div>
-          
+
           <div class="bg-light rounded-xl p-6 text-center card-hover">
-            <div class="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mx-auto mb-4">
+            <div
+              class="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mx-auto mb-4">
               <i class="fa fa-book text-2xl"></i>
             </div>
             <h3 class="font-medium mb-1">开发日记</h3>
@@ -247,7 +254,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 摄影作品展示 -->
     <section id="photography" class="section-padding bg-light">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -257,12 +264,13 @@
             通过镜头捕捉生活中的美好瞬间，记录光影变化的奇妙时刻
           </p>
         </div>
-        
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           <!-- 作品 1 -->
           <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
             <div class="aspect-[4/3] image-zoom">
-              <img src="https://picsum.photos/id/29/800/600" alt="城市夜景摄影，展示城市灯光和车流轨迹" class="w-full h-full object-cover">
+              <img src="https://picsum.photos/id/29/800/600" alt="城市夜景摄影，展示城市灯光和车流轨迹"
+                class="w-full h-full object-cover">
             </div>
             <div class="p-5">
               <div class="flex justify-between items-center mb-2">
@@ -276,7 +284,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 作品 2 -->
           <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
             <div class="aspect-[4/3] image-zoom">
@@ -294,7 +302,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 作品 3 -->
           <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
             <div class="aspect-[4/3] image-zoom">
@@ -313,7 +321,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="text-center">
           <a href="#" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
             <span>查看更多摄影作品</span>
@@ -322,7 +330,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 技术分享 -->
     <section id="tech" class="section-padding bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -332,7 +340,7 @@
             探索编程世界的奥秘，分享开发经验和技术心得
           </p>
         </div>
-        
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <!-- 文章 1 -->
           <div class="bg-light rounded-xl overflow-hidden shadow-sm card-hover flex flex-col md:flex-row">
@@ -357,11 +365,12 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 文章 2 -->
           <div class="bg-light rounded-xl overflow-hidden shadow-sm card-hover flex flex-col md:flex-row">
             <div class="md:w-1/3 image-zoom">
-              <img src="https://picsum.photos/id/180/600/600" alt="JavaScript异步编程文章封面" class="w-full h-full object-cover">
+              <img src="https://picsum.photos/id/180/600/600" alt="JavaScript异步编程文章封面"
+                class="w-full h-full object-cover">
             </div>
             <div class="md:w-2/3 p-6 flex flex-col">
               <div class="flex items-center gap-2 mb-3">
@@ -381,7 +390,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 文章 3 -->
           <div class="bg-light rounded-xl overflow-hidden shadow-sm card-hover flex flex-col md:flex-row">
             <div class="md:w-1/3 image-zoom">
@@ -405,7 +414,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 文章 4 -->
           <div class="bg-light rounded-xl overflow-hidden shadow-sm card-hover flex flex-col md:flex-row">
             <div class="md:w-1/3 image-zoom">
@@ -430,7 +439,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="text-center">
           <a href="#" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
             <span>查看更多技术文章</span>
@@ -439,7 +448,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 开发日记 -->
     <section id="diary" class="section-padding bg-light">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -449,7 +458,7 @@
             记录项目开发过程中的思考、遇到的问题和解决方案
           </p>
         </div>
-        
+
         <div class="bg-white rounded-2xl shadow-md overflow-hidden mb-12">
           <div class="p-8 border-b">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -462,7 +471,7 @@
                 进行中
               </span>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="bg-light p-5 rounded-xl">
                 <div class="flex items-center gap-3 mb-3">
@@ -490,7 +499,7 @@
                   </li>
                 </ul>
               </div>
-              
+
               <div class="bg-light p-5 rounded-xl">
                 <div class="flex items-center gap-3 mb-3">
                   <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
@@ -517,7 +526,7 @@
                   </li>
                 </ul>
               </div>
-              
+
               <div class="bg-light p-5 rounded-xl">
                 <div class="flex items-center gap-3 mb-3">
                   <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
@@ -546,11 +555,11 @@
               </div>
             </div>
           </div>
-          
+
           <!-- 开发日志 -->
           <div class="p-8">
             <h4 class="text-xl font-bold mb-6">开发日志</h4>
-            
+
             <div class="space-y-8">
               <div class="flex gap-4">
                 <div class="flex flex-col items-center">
@@ -574,7 +583,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="flex gap-4">
                 <div class="flex flex-col items-center">
                   <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary z-10">
@@ -596,7 +605,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="flex gap-4">
                 <div class="flex flex-col items-center">
                   <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary z-10">
@@ -621,7 +630,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="text-center">
           <a href="#" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
             <span>查看更多开发日记</span>
@@ -630,7 +639,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 关于我 -->
     <section id="about" class="section-padding bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -638,7 +647,8 @@
           <div>
             <div class="relative">
               <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
-                <img src="https://picsum.photos/id/177/800/1000" alt="作者照片，一位拿着相机的程序员" class="w-full h-full object-cover">
+                <img src="https://picsum.photos/id/177/800/1000" alt="作者照片，一位拿着相机的程序员"
+                  class="w-full h-full object-cover">
               </div>
               <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg max-w-[220px] card-hover">
                 <div class="flex items-center gap-2 mb-3">
@@ -653,7 +663,7 @@
               </div>
             </div>
           </div>
-          
+
           <div>
             <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-6 font-display">关于我</h2>
             <p class="text-gray-medium text-lg mb-6 leading-relaxed">
@@ -662,7 +672,7 @@
             <p class="text-gray-medium text-lg mb-8 leading-relaxed">
               这个博客是我分享的平台，在这里你可以看到我的摄影作品、开发项目、技术心得和编程教程。希望通过这个平台，能与更多志同道合的朋友交流学习。
             </p>
-            
+
             <div class="grid grid-cols-2 gap-6 mb-8">
               <div>
                 <h3 class="font-semibold text-lg mb-4">技能</h3>
@@ -685,7 +695,7 @@
                   </li>
                 </ul>
               </div>
-              
+
               <div>
                 <h3 class="font-semibold text-lg mb-4">工具</h3>
                 <ul class="space-y-2">
@@ -708,29 +718,34 @@
                 </ul>
               </div>
             </div>
-            
+
             <div class="flex flex-wrap gap-4">
               <a href="#" class="btn-primary flex items-center gap-2">
                 <i class="fa fa-envelope"></i>
                 <span>联系我</span>
               </a>
-              <a href="#" class="border border-gray-300 px-5 py-2.5 rounded-lg hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+              <a href="#"
+                class="border border-gray-300 px-5 py-2.5 rounded-lg hover:border-primary hover:text-primary transition-all flex items-center gap-2">
                 <i class="fa fa-download"></i>
                 <span>下载简历</span>
               </a>
             </div>
-            
+
             <div class="mt-8 flex items-center gap-4">
-              <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
+              <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
                 <i class="fa fa-github"></i>
               </a>
-              <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
+              <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
                 <i class="fa fa-instagram"></i>
               </a>
-              <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
+              <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
                 <i class="fa fa-linkedin"></i>
               </a>
-              <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
+              <a href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-all">
                 <i class="fa fa-twitter"></i>
               </a>
             </div>
@@ -738,7 +753,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- 订阅区域 -->
     <section class="py-16 bg-primary/5">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -747,15 +762,16 @@
           <p class="text-gray-medium mb-8 text-lg">
             及时获取最新的摄影作品和技术文章，不定期分享独家教程和资源
           </p>
-          
+
           <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-            <input type="email" placeholder="输入你的邮箱地址" class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+            <input type="email" placeholder="输入你的邮箱地址"
+              class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
             <button type="submit" class="btn-primary whitespace-nowrap">
               <i class="fa fa-paper-plane mr-1"></i>
               立即订阅
             </button>
           </form>
-          
+
           <p class="text-xs text-gray-medium mt-4">
             我们尊重你的隐私，不会向第三方分享你的信息
           </p>
@@ -763,7 +779,7 @@
       </div>
     </section>
   </main>
-  
+
   <!-- 页脚 -->
   <footer class="bg-dark text-white py-12">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -779,21 +795,25 @@
             一个融合摄影艺术与编程技术的个人博客，分享光影之美与代码之趣。
           </p>
           <div class="flex items-center gap-4">
-            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
+            <a href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
               <i class="fa fa-github"></i>
             </a>
-            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
+            <a href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
               <i class="fa fa-instagram"></i>
             </a>
-            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
+            <a href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
               <i class="fa fa-linkedin"></i>
             </a>
-            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
+            <a href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all">
               <i class="fa fa-twitter"></i>
             </a>
           </div>
         </div>
-        
+
         <div>
           <h3 class="font-semibold text-lg mb-4">快速链接</h3>
           <ul class="space-y-2">
@@ -804,7 +824,7 @@
             <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于我</a></li>
           </ul>
         </div>
-        
+
         <div>
           <h3 class="font-semibold text-lg mb-4">联系我</h3>
           <ul class="space-y-2">
@@ -819,7 +839,7 @@
           </ul>
         </div>
       </div>
-      
+
       <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
         <p class="text-gray-400 text-sm mb-4 md:mb-0">
           &copy; 2023 光影与代码. 保留所有权利.
@@ -832,14 +852,16 @@
       </div>
     </div>
   </footer>
-  
+
   <!-- 返回顶部按钮 -->
-  <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+  <button id="back-to-top"
+    class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
     <i class="fa fa-chevron-up"></i>
   </button>
-  
+
   <!-- JavaScript -->
   <script type="module" src="js/app.js"></script>
+  <script src="js/security/secret-access.js"></script>
 </body>
+
 </html>
-    
