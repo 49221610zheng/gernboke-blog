@@ -222,6 +222,158 @@ class UXOptimizer {
     this.longTaskCount = (this.longTaskCount || 0) + 1;
   }
 
+  // 设置动画减少选项
+  setupReducedMotion() {
+    // 检查用户是否偏好减少动画
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // 应用减少动画设置
+    const applyReducedMotion = (shouldReduce) => {
+      if (shouldReduce) {
+        document.documentElement.classList.add('reduce-motion');
+
+        // 添加减少动画的CSS
+        const style = document.createElement('style');
+        style.textContent = `
+          .reduce-motion *,
+          .reduce-motion *::before,
+          .reduce-motion *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        `;
+        document.head.appendChild(style);
+      } else {
+        document.documentElement.classList.remove('reduce-motion');
+      }
+    };
+
+    // 初始应用
+    applyReducedMotion(prefersReducedMotion.matches);
+
+    // 监听变化
+    prefersReducedMotion.addEventListener('change', (e) => {
+      applyReducedMotion(e.matches);
+    });
+
+    // 添加用户控制选项
+    this.addMotionControl();
+  }
+
+  // 添加动画控制选项
+  addMotionControl() {
+    const controlPanel = document.createElement('div');
+    controlPanel.className = 'motion-control-panel';
+    controlPanel.innerHTML = `
+      <button class="motion-toggle-btn" aria-label="切换动画效果">
+        <i class="fas fa-play"></i>
+        <span>动画效果</span>
+      </button>
+    `;
+
+    const toggleBtn = controlPanel.querySelector('.motion-toggle-btn');
+    let motionEnabled = !document.documentElement.classList.contains('reduce-motion');
+
+    const updateButton = () => {
+      const icon = toggleBtn.querySelector('i');
+      const text = toggleBtn.querySelector('span');
+      if (motionEnabled) {
+        icon.className = 'fas fa-play';
+        text.textContent = '动画效果';
+        toggleBtn.setAttribute('aria-pressed', 'true');
+      } else {
+        icon.className = 'fas fa-pause';
+        text.textContent = '减少动画';
+        toggleBtn.setAttribute('aria-pressed', 'false');
+      }
+    };
+
+    toggleBtn.addEventListener('click', () => {
+      motionEnabled = !motionEnabled;
+      if (motionEnabled) {
+        document.documentElement.classList.remove('reduce-motion');
+      } else {
+        document.documentElement.classList.add('reduce-motion');
+      }
+      updateButton();
+
+      // 保存用户偏好
+      localStorage.setItem('motionEnabled', motionEnabled.toString());
+    });
+
+    // 恢复用户偏好
+    const savedPreference = localStorage.getItem('motionEnabled');
+    if (savedPreference !== null) {
+      motionEnabled = savedPreference === 'true';
+      if (!motionEnabled) {
+        document.documentElement.classList.add('reduce-motion');
+      }
+    }
+
+    updateButton();
+
+    // 添加样式
+    const style = document.createElement('style');
+    style.textContent = `
+      .motion-control-panel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+      }
+
+      .motion-control-panel:hover {
+        opacity: 1;
+      }
+
+      .motion-toggle-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .motion-toggle-btn:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .motion-toggle-btn:focus {
+        outline: 2px solid #60a5fa;
+        outline-offset: 2px;
+      }
+
+      @media (max-width: 768px) {
+        .motion-control-panel {
+          bottom: 80px;
+          right: 16px;
+        }
+
+        .motion-toggle-btn {
+          padding: 10px 14px;
+          font-size: 12px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 添加到页面
+    document.body.appendChild(controlPanel);
+  }
+
   // 屏幕阅读器支持
   setupScreenReaderSupport() {
     // 添加ARIA标签

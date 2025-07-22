@@ -34,21 +34,24 @@
 
   <!-- Tailwind 配置 -->
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#165DFF',
-            secondary: '#36CFC9',
-            dark: '#1D2129',
-            light: '#F7F8FA',
-            'gray-medium': '#86909C'
+    // 仅在Tailwind可用时配置
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#165DFF',
+              secondary: '#36CFC9',
+              dark: '#1D2129',
+              light: '#F7F8FA',
+              'gray-medium': '#86909C'
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              display: ['Montserrat', 'sans-serif']
+            },
           },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            display: ['Montserrat', 'sans-serif']
-          },
-        },
+        }
       }
     }
   </script>
