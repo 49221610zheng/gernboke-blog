@@ -13,7 +13,23 @@
       "package*.json",
       "scripts/**",
       "start-dev.*",
-      "firebase-service-account.json"
+      "firebase-service-account.json",
+      "**/*.bat",
+      "**/*.sh",
+      "**/*.ps1",
+      "**/*.txt",
+      "tests/**",
+      "*.config.js",
+      "auto-deploy.js",
+      "check-deployment.js",
+      "simple-deploy.js",
+      "verify-firebase-config.js",
+      "firebase-setup.js",
+      "simple-server.js",
+      "test-runner-simple.js",
+      "website-accessibility-test.js",
+      "deployment-status.html",
+      "trigger.txt"
     ],
     "rewrites": [
       {
