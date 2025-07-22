@@ -26,7 +26,7 @@
   "editor.autoClosingBrackets": "always",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "html.validate.styles": false,
   "css.lint.unknownAtRules": "ignore",
