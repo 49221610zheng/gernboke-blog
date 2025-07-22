@@ -157,7 +157,6 @@ class SimpleApp {
             console.warn('无效的选择器:', href);
           }
         }
-        }
       });
     });
 

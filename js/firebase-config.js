@@ -28,8 +28,14 @@ function initializeFirebase() {
       return false;
     }
 
-    // 初始化Firebase应用
-    app = firebase.initializeApp(firebaseConfig);
+    // 检查是否已经初始化
+    if (firebase.apps && firebase.apps.length > 0) {
+      console.log('Firebase已经初始化，使用现有实例');
+      app = firebase.apps[0];
+    } else {
+      // 初始化Firebase应用
+      app = firebase.initializeApp(firebaseConfig);
+    }
 
     // 初始化服务
     db = firebase.firestore();

@@ -10,11 +10,21 @@
   <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
 
   <!-- 外部资源 -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
 
-  <!-- 自定义样式 -->
+  <!-- 生产环境样式 -->
+  <link rel="stylesheet" href="css/production-styles.css">
   <link rel="stylesheet" href="css/enhanced-styles.css">
+
+  <!-- Tailwind配置 (仅开发环境) -->
+  <script>
+    // 仅在开发环境加载Tailwind CDN
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      const tailwindScript = document.createElement('script');
+      tailwindScript.src = 'https://cdn.tailwindcss.com';
+      document.head.appendChild(tailwindScript);
+    }
+  </script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
