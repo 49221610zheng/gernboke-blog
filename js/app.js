@@ -38,6 +38,26 @@ class App {
   // 加载核心模块
   async loadCoreModules() {
     try {
+      // 等待Firebase SDK加载完成
+      if (typeof waitForFirebase !== 'undefined') {
+        await waitForFirebase();
+      }
+
+      // 确保Firebase已初始化
+      if (typeof initializeFirebase !== 'undefined') {
+        initializeFirebase();
+      }
+
+      // 获取Firebase服务
+      if (typeof getFirebaseServices !== 'undefined') {
+        const firebaseServices = getFirebaseServices();
+        if (firebaseServices) {
+          this.db = firebaseServices.db;
+          this.auth = firebaseServices.auth;
+          this.storage = firebaseServices.storage;
+        }
+      }
+
       this.stateManager = await loadModule('stateManager');
       this.errorHandler = await loadModule('errorHandler');
 
@@ -71,19 +91,19 @@ class App {
       }
     });
   }
-  
+
   // 设置事件监听器
   setupEventListeners() {
     // 导航菜单切换
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
-    
+
     if (menuToggle && mobileMenu) {
       menuToggle.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
       });
     }
-    
+
     // 导航栏滚动效果
     const navbar = document.getElementById('navbar');
     if (navbar) {
@@ -97,20 +117,20 @@ class App {
         }
       });
     }
-    
+
     // 平滑滚动
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
-        
+
         // 关闭移动菜单
         if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
           mobileMenu.classList.add('hidden');
         }
-        
+
         const targetId = anchor.getAttribute('href');
         const targetElement = document.querySelector(targetId);
-        
+
         if (targetElement) {
           window.scrollTo({
             top: targetElement.offsetTop - 80,
@@ -119,7 +139,7 @@ class App {
         }
       });
     });
-    
+
     // 返回顶部按钮
     const backToTopButton = document.getElementById('back-to-top');
     if (backToTopButton) {
@@ -132,7 +152,7 @@ class App {
           backToTopButton.classList.remove('opacity-100', 'visible');
         }
       });
-      
+
       backToTopButton.addEventListener('click', () => {
         window.scrollTo({
           top: 0,
@@ -141,7 +161,7 @@ class App {
       });
     }
   }
-  
+
   // 加载初始数据
   async loadInitialData() {
     this.stateManager.set('loading', true);
@@ -170,25 +190,25 @@ class App {
       });
     }
   }
-  
+
   // 渲染摄影作品
   renderPhotography() {
     const container = document.querySelector('#photography .grid');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     this.state.photography.forEach(photo => {
       const photoElement = this.createPhotoElement(photo);
       container.appendChild(photoElement);
     });
   }
-  
+
   // 创建摄影作品元素
   createPhotoElement(photo) {
     const div = document.createElement('div');
     div.className = 'bg-white rounded-xl overflow-hidden shadow-md card-hover';
-    
+
     div.innerHTML = `
       <div class="aspect-[4/3] image-zoom">
         <img src="${photo.thumbnailUrl || photo.imageUrl}" 
@@ -215,32 +235,32 @@ class App {
         </div>
       </div>
     `;
-    
+
     // 添加点击事件
     const viewBtn = div.querySelector('.view-detail-btn');
     viewBtn.addEventListener('click', () => this.viewPhotoDetail(photo.id));
-    
+
     return div;
   }
-  
+
   // 渲染文章
   renderArticles() {
     const container = document.querySelector('#tech .grid');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     this.state.articles.forEach(article => {
       const articleElement = this.createArticleElement(article);
       container.appendChild(articleElement);
     });
   }
-  
+
   // 创建文章元素
   createArticleElement(article) {
     const div = document.createElement('div');
     div.className = 'bg-light rounded-xl overflow-hidden shadow-sm card-hover flex flex-col md:flex-row';
-    
+
     div.innerHTML = `
       <div class="md:w-1/3 image-zoom">
         <img src="${article.coverImageUrl || 'https://picsum.photos/600/600'}" 
@@ -250,9 +270,9 @@ class App {
       </div>
       <div class="md:w-2/3 p-6 flex flex-col">
         <div class="flex items-center gap-2 mb-3">
-          ${article.tags ? article.tags.map(tag => 
-            `<span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">${tag}</span>`
-          ).join('') : ''}
+          ${article.tags ? article.tags.map(tag =>
+      `<span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">${tag}</span>`
+    ).join('') : ''}
         </div>
         <h3 class="font-semibold text-xl mb-3">${article.title}</h3>
         <p class="text-gray-medium text-sm mb-4 flex-grow">${article.excerpt}</p>
@@ -269,20 +289,20 @@ class App {
         </div>
       </div>
     `;
-    
+
     // 添加点击事件
     div.addEventListener('click', () => this.viewArticleDetail(article.id));
     div.style.cursor = 'pointer';
-    
+
     return div;
   }
-  
+
   // 查看摄影作品详情
   async viewPhotoDetail(id) {
     try {
       // 增加浏览次数
       await photographyService.incrementView(id);
-      
+
       // 这里可以打开模态框或跳转到详情页
       console.log('View photo detail:', id);
       // TODO: 实现详情页面
@@ -290,13 +310,13 @@ class App {
       console.error('Error viewing photo detail:', error);
     }
   }
-  
+
   // 查看文章详情
   async viewArticleDetail(id) {
     try {
       // 增加浏览次数
       await articleService.incrementView(id);
-      
+
       // 这里可以打开模态框或跳转到详情页
       console.log('View article detail:', id);
       // TODO: 实现详情页面
@@ -304,29 +324,29 @@ class App {
       console.error('Error viewing article detail:', error);
     }
   }
-  
+
   // 设置加载状态
   setLoading(loading) {
     this.state.loading = loading;
-    
+
     // 可以在这里显示/隐藏加载指示器
     const loadingElements = document.querySelectorAll('.loading-indicator');
     loadingElements.forEach(el => {
       el.style.display = loading ? 'block' : 'none';
     });
   }
-  
+
   // 显示错误信息
   showError(message) {
     this.state.error = message;
-    
+
     // 创建错误提示
     const errorDiv = document.createElement('div');
     errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
     errorDiv.textContent = message;
-    
+
     document.body.appendChild(errorDiv);
-    
+
     // 3秒后自动移除
     setTimeout(() => {
       if (errorDiv.parentNode) {
@@ -334,7 +354,7 @@ class App {
       }
     }, 3000);
   }
-  
+
   // 设置交叉观察器（用于懒加载）
   setupIntersectionObserver() {
     if ('IntersectionObserver' in window) {
@@ -350,18 +370,18 @@ class App {
           }
         });
       });
-      
+
       // 观察所有带有 data-src 的图片
       document.querySelectorAll('img[data-src]').forEach(img => {
         imageObserver.observe(img);
       });
     }
   }
-  
+
   // 格式化日期
   formatDate(timestamp) {
     if (!timestamp) return '';
-    
+
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
@@ -369,7 +389,7 @@ class App {
       day: '2-digit'
     });
   }
-  
+
   // 获取分类显示名称
   getCategoryDisplayName(category) {
     const categoryMap = {
@@ -379,7 +399,7 @@ class App {
       'street': '街头摄影',
       'architecture': '建筑摄影'
     };
-    
+
     return categoryMap[category] || category;
   }
 }

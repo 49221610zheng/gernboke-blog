@@ -1,50 +1,40 @@
 // 数据库服务层 - 实现所有数据操作
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  getDoc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
-  limit, 
-  startAfter,
-  increment,
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '../firebase-config.js';
+// 使用Firebase CDN版本，通过全局firebase对象访问
+
+// 获取数据库实例
+function getDB() {
+  const services = getFirebaseServices();
+  return services ? services.db : null;
+}
 
 // 通用查询函数
 async function getCollection(collectionName, options = {}) {
   try {
     const collectionRef = collection(db, collectionName);
     let q = collectionRef;
-    
+
     // 添加查询条件
     if (options.where) {
       options.where.forEach(condition => {
         q = query(q, where(...condition));
       });
     }
-    
+
     // 添加排序
     if (options.orderBy) {
       q = query(q, orderBy(...options.orderBy));
     }
-    
+
     // 添加限制
     if (options.limit) {
       q = query(q, limit(options.limit));
     }
-    
+
     // 添加分页
     if (options.startAfter) {
       q = query(q, startAfter(options.startAfter));
     }
-    
+
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({
       id: doc.id,
@@ -61,7 +51,7 @@ async function getDocument(collectionName, docId) {
   try {
     const docRef = doc(db, collectionName, docId);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return {
         id: docSnap.id,
@@ -140,34 +130,34 @@ export const photographyService = {
       orderBy: ['createdAt', 'desc'],
       limit: pageSize
     };
-    
+
     if (category) {
       options.where = [['category', '==', category]];
     }
-    
+
     return await getCollection('photography', options);
   },
-  
+
   // 获取单张作品详情
   async getDetail(id) {
     return await getDocument('photography', id);
   },
-  
+
   // 创建摄影作品
   async create(data) {
     return await createDocument('photography', data);
   },
-  
+
   // 更新摄影作品
   async update(id, data) {
     return await updateDocument('photography', id, data);
   },
-  
+
   // 删除摄影作品
   async delete(id) {
     return await deleteDocument('photography', id);
   },
-  
+
   // 增加浏览次数
   async incrementView(id) {
     return await incrementViewCount('photography', id);
@@ -182,7 +172,7 @@ export const articleService = {
       orderBy: ['createdAt', 'desc'],
       limit: pageSize
     };
-    
+
     const whereConditions = [];
     if (category) {
       whereConditions.push(['category', '==', category]);
@@ -190,34 +180,34 @@ export const articleService = {
     if (tag) {
       whereConditions.push(['tags', 'array-contains', tag]);
     }
-    
+
     if (whereConditions.length > 0) {
       options.where = whereConditions;
     }
-    
+
     return await getCollection('articles', options);
   },
-  
+
   // 获取文章详情
   async getDetail(id) {
     return await getDocument('articles', id);
   },
-  
+
   // 创建文章
   async create(data) {
     return await createDocument('articles', data);
   },
-  
+
   // 更新文章
   async update(id, data) {
     return await updateDocument('articles', id, data);
   },
-  
+
   // 删除文章
   async delete(id) {
     return await deleteDocument('articles', id);
   },
-  
+
   // 增加浏览次数
   async incrementView(id) {
     return await incrementViewCount('articles', id);
@@ -237,10 +227,10 @@ export const commentService = {
       orderBy: ['createdAt', 'desc'],
       limit: pageSize
     };
-    
+
     return await getCollection('comments', options);
   },
-  
+
   // 提交评论
   async create(comment) {
     return await createDocument('comments', {
@@ -248,12 +238,12 @@ export const commentService = {
       isApproved: false // 默认需要审核
     });
   },
-  
+
   // 审核评论
   async approve(id) {
     return await updateDocument('comments', id, { isApproved: true });
   },
-  
+
   // 删除评论
   async delete(id) {
     return await deleteDocument('comments', id);
@@ -266,7 +256,7 @@ export const userService = {
   async getProfile(uid) {
     return await getDocument('users', uid);
   },
-  
+
   // 创建用户资料
   async createProfile(uid, data) {
     const docRef = doc(db, 'users', uid);
@@ -277,7 +267,7 @@ export const userService = {
     });
     return true;
   },
-  
+
   // 更新用户资料
   async updateProfile(uid, data) {
     return await updateDocument('users', uid, data);
@@ -290,7 +280,7 @@ export const settingsService = {
   async get() {
     return await getDocument('settings', 'site_settings');
   },
-  
+
   // 更新系统设置
   async update(data) {
     return await updateDocument('settings', 'site_settings', data);
