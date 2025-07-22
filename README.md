@@ -1,6 +1,10 @@
-# 光影与代码博客系统
+# 🌟 格恩博克博客系统
 
 > 融合摄影艺术与编程技术的现代化个人博客系统
+
+[![Deploy to GitHub Pages](https://github.com/49221610zheng/gernboke-blog/actions/workflows/pages.yml/badge.svg)](https://github.com/49221610zheng/gernboke-blog/actions/workflows/pages.yml)
+
+🌐 **在线访问**: [https://49221610zheng.github.io/gernboke-blog/](https://49221610zheng.github.io/gernboke-blog/)
 
 ![项目预览](https://picsum.photos/800/400?random=1)
 
