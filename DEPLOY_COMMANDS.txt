@@ -1,0 +1,62 @@
+Firebase Deploy Commands
+========================
+
+If the batch files have encoding issues, you can run these commands manually:
+
+1. Install Firebase CLI:
+   npm install -g firebase-tools
+
+2. Login to Firebase:
+   firebase login
+
+3. Set project:
+   firebase use gernboke
+
+4. Deploy (choose one):
+   firebase deploy --only hosting
+   firebase deploy
+
+5. Check deployment:
+   node check-deployment.js
+
+Alternative Methods:
+===================
+
+Method 1: Use PowerShell script
+   Right-click deploy-firebase.ps1 -> Run with PowerShell
+
+Method 2: Use quick deploy
+   Double-click quick-deploy.bat
+
+Method 3: Use npm commands
+   npm run firebase:login
+   npm run firebase:hosting
+
+Method 4: Manual commands (copy and paste each line):
+   npm install -g firebase-tools
+   firebase login
+   firebase use gernboke
+   firebase deploy --only hosting
+
+Troubleshooting:
+===============
+
+If you get encoding errors:
+1. Use PowerShell instead of Command Prompt
+2. Run: chcp 65001 before running batch files
+3. Use the manual commands above
+
+If installation fails:
+1. Run Command Prompt as Administrator
+2. Try: npm config set registry https://registry.npmjs.org/
+3. Or use: yarn global add firebase-tools
+
+Your website URLs after deployment:
+===================================
+Main: https://gernboke.web.app
+Alt:  https://gernboke.firebaseapp.com
+Admin: https://gernboke.web.app/admin
+
+Firebase Console:
+================
+https://console.firebase.google.com/project/gernboke

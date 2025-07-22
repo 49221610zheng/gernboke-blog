@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "gernboke",
+    "production": "gernboke"
+  },
+  "targets": {
+    "gernboke": {
+      "hosting": {
+        "production": [
+          "gernboke"
+        ],
+        "staging": [
+          "gernboke-staging"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "environments": {
+    "staging": {
+      "projectId": "your-project-staging",
+      "channel": "staging",
+      "expires": "30d",
+      "description": "Staging environment for testing"
+    },
+    "production": {
+      "projectId": "your-project-id",
+      "channel": null,
+      "expires": null,
+      "description": "Production environment"
+    }
+  },
+  "preDeployChecks": true,
+  "postDeployTests": true,
+  "backupBeforeDeploy": true,
+  "rollbackOnFailure": true,
+  "notificationWebhook": null,
+  "testUrls": {
+    "staging": "https://your-project-staging--staging.web.app",
+    "production": "https://your-project-id.web.app"
+  },
+  "healthChecks": [
+    {
+      "name": "Homepage",
+      "path": "/",
+      "expectedStatus": 200,
+      "timeout": 10000
+    },
+    {
+      "name": "Admin Panel",
+      "path": "/admin",
+      "expectedStatus": 200,
+      "timeout": 10000
+    }
+  ],
+  "performance": {
+    "lighthouseThresholds": {
+      "performance": 90,
+      "accessibility": 95,
+      "bestPractices": 90,
+      "seo": 90
+    },
+    "runLighthouse": false
+  },
+  "security": {
+    "checkSecurityHeaders": true,
+    "checkSSL": true,
+    "checkFirebaseRules": true
+  },
+  "monitoring": {
+    "enablePerformanceMonitoring": true,
+    "enableErrorReporting": true,
+    "enableAnalytics": true
+  }
+}

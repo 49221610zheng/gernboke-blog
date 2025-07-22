@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase部署状态检查</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        .warning { background: #fff3cd; border-color: #ffc107; }
+        .info { background: #d1ecf1; border-color: #17a2b8; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn.success { background: #28a745; }
+        .btn.success:hover { background: #1e7e34; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .url-list {
+            list-style: none;
+            padding: 0;
+        }
+        .url-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Firebase部署状态检查</h1>
+        
+        <div class="status info">
+            <h3>📋 部署信息</h3>
+            <p><strong>项目ID:</strong> gernboke</p>
+            <p><strong>部署时间:</strong> <span id="deployTime">检查中...</span></p>
+            <p><strong>状态:</strong> <span id="deployStatus">检查中...</span></p>
+        </div>
+
+        <div class="status warning">
+            <h3>🔧 部署步骤</h3>
+            <p>如果网站还未部署，请按照以下步骤操作：</p>
+            <ol>
+                <li>双击运行 <code>run-auto-deploy.bat</code></li>
+                <li>或者手动执行命令（参考 MANUAL_DEPLOY_STEPS.md）</li>
+                <li>等待部署完成后刷新此页面</li>
+            </ol>
+        </div>
+
+        <h3>🌐 网站地址检查</h3>
+        <ul class="url-list" id="urlList">
+            <li>
+                <span>主域名: https://gernboke.web.app</span>
+                <span id="status-main" class="loading"></span>
+            </li>
+            <li>
+                <span>备用域名: https://gernboke.firebaseapp.com</span>
+                <span id="status-alt" class="loading"></span>
+            </li>
+            <li>
+                <span>管理后台: https://gernboke.web.app/admin</span>
+                <span id="status-admin" class="loading"></span>
+            </li>
+        </ul>
+
+        <div id="results"></div>
+
+        <h3>🔗 快速链接</h3>
+        <a href="https://gernboke.web.app" target="_blank" class="btn">访问网站</a>
+        <a href="https://gernboke.web.app/admin" target="_blank" class="btn">管理后台</a>
+        <a href="https://console.firebase.google.com/project/gernboke" target="_blank" class="btn">Firebase Console</a>
+        
+        <h3>🛠️ 部署工具</h3>
+        <button onclick="runDeploy()" class="btn success">运行自动部署</button>
+        <button onclick="checkStatus()" class="btn">重新检查状态</button>
+        
+        <div class="status info">
+            <h3>📚 帮助文档</h3>
+            <ul>
+                <li><a href="MANUAL_DEPLOY_STEPS.md">手动部署步骤</a></li>
+                <li><a href="FIREBASE_DEPLOY_GUIDE.md">完整部署指南</a></li>
+                <li><a href="FIREBASE_SETUP_COMPLETE.md">配置完成指南</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function checkUrl(url) {
+            try {
+                const response = await fetch(url, { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                return true;
+            } catch (error) {
+                // 由于CORS限制，我们使用图片加载来检测
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                    img.src = url + '/favicon.ico?' + Date.now();
+                    
+                    setTimeout(() => resolve(false), 5000);
+                });
+            }
+        }
+
+        async function checkStatus() {
+            document.getElementById('deployTime').textContent = new Date().toLocaleString();
+            document.getElementById('deployStatus').textContent = '检查中...';
+            
+            const urls = [
+                { id: 'status-main', url: 'https://gernboke.web.app' },
+                { id: 'status-alt', url: 'https://gernboke.firebaseapp.com' },
+                { id: 'status-admin', url: 'https://gernboke.web.app/admin' }
+            ];
+
+            let successCount = 0;
+            
+            for (const { id, url } of urls) {
+                const element = document.getElementById(id);
+                element.className = 'loading';
+                
+                const isAccessible = await checkUrl(url);
+                
+                if (isAccessible) {
+                    element.innerHTML = '✅ 可访问';
+                    element.className = '';
+                    successCount++;
+                } else {
+                    element.innerHTML = '❌ 不可访问';
+                    element.className = '';
+                }
+            }
+
+            // 更新总体状态
+            const statusElement = document.getElementById('deployStatus');
+            const resultsElement = document.getElementById('results');
+            
+            if (successCount === urls.length) {
+                statusElement.textContent = '✅ 部署成功';
+                resultsElement.innerHTML = `
+                    <div class="status success">
+                        <h3>🎉 部署成功！</h3>
+                        <p>您的博客网站已成功部署到Firebase，所有地址都可以正常访问。</p>
+                    </div>
+                `;
+            } else if (successCount > 0) {
+                statusElement.textContent = '⚠️ 部分成功';
+                resultsElement.innerHTML = `
+                    <div class="status warning">
+                        <h3>⚠️ 部分成功</h3>
+                        <p>${successCount}/${urls.length} 个地址可访问。可能需要等待几分钟让部署完全生效。</p>
+                    </div>
+                `;
+            } else {
+                statusElement.textContent = '❌ 未部署';
+                resultsElement.innerHTML = `
+                    <div class="status error">
+                        <h3>❌ 网站未部署</h3>
+                        <p>网站尚未部署或部署失败。请运行部署脚本或按照手动步骤进行部署。</p>
+                    </div>
+                `;
+            }
+        }
+
+        function runDeploy() {
+            alert('请双击运行 run-auto-deploy.bat 文件，或按照 MANUAL_DEPLOY_STEPS.md 中的步骤手动部署。');
+        }
+
+        // 页面加载时自动检查
+        window.onload = function() {
+            checkStatus();
+            
+            // 每30秒自动检查一次
+            setInterval(checkStatus, 30000);
+        };
+    </script>
+</body>
+</html>

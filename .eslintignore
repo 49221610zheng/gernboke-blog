@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Test results
+test-results/
+playwright-report/
+lighthouse-results/
+accessibility-results/
+
+# Generated files
+*.min.js
+
+# Configuration files
+.eslintrc.js
+.prettierrc.js
+jest.config.js
+playwright.config.js
+
+# Firebase
+.firebase/
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+backups/

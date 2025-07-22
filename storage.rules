@@ -1,0 +1,58 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // 图片上传规则
+    match /images/{allPaths=**} {
+      // 所有人都可以读取图片
+      allow read: if true;
+      
+      // 只有管理员可以上传、更新、删除图片
+      allow write: if request.auth != null && isAdmin();
+      
+      // 文件大小限制 (20MB)
+      allow write: if request.resource.size < 20 * 1024 * 1024;
+      
+      // 文件类型限制
+      allow write: if request.resource.contentType.matches('image/.*');
+    }
+    
+    // 缩略图规则
+    match /thumbnails/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+      allow write: if request.resource.size < 5 * 1024 * 1024;
+      allow write: if request.resource.contentType.matches('image/.*');
+    }
+    
+    // 文章相关图片
+    match /articles/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+      allow write: if request.resource.size < 10 * 1024 * 1024;
+      allow write: if request.resource.contentType.matches('image/.*');
+    }
+    
+    // 用户头像
+    match /avatars/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+      allow write: if request.resource.size < 2 * 1024 * 1024;
+      allow write: if request.resource.contentType.matches('image/.*');
+    }
+    
+    // 系统文件（logo、favicon等）
+    match /system/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+      allow write: if request.resource.size < 5 * 1024 * 1024;
+    }
+    
+    // 辅助函数：检查是否为管理员
+    function isAdmin() {
+      return request.auth != null 
+        && exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}

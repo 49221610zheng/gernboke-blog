@@ -1,0 +1,181 @@
+// Firestore 安全规则
+// 这些规则定义了谁可以访问数据库中的哪些数据
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 用户集合规则
+    match /users/{userId} {
+      // 用户只能读取和更新自己的资料
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // 管理员可以读取所有用户资料
+      allow read: if request.auth != null && isAdmin();
+    }
+    
+    // 摄影作品集合规则
+    match /photography/{photoId} {
+      // 所有人都可以读取摄影作品
+      allow read: if true;
+      
+      // 只有管理员可以创建、更新、删除摄影作品
+      allow create, update, delete: if request.auth != null && isAdmin();
+      
+      // 允许增加浏览次数（任何人都可以）
+      allow update: if request.auth == null 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount'])
+        && request.resource.data.viewCount == resource.data.viewCount + 1;
+    }
+    
+    // 文章集合规则
+    match /articles/{articleId} {
+      // 所有人都可以读取已发布的文章
+      allow read: if resource.data.status == 'published';
+      
+      // 管理员可以读取所有文章（包括草稿）
+      allow read: if request.auth != null && isAdmin();
+      
+      // 只有管理员可以创建、更新、删除文章
+      allow create, update, delete: if request.auth != null && isAdmin();
+      
+      // 允许增加浏览次数（任何人都可以）
+      allow update: if request.auth == null 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount'])
+        && request.resource.data.viewCount == resource.data.viewCount + 1;
+    }
+    
+    // 评论集合规则
+    match /comments/{commentId} {
+      // 所有人都可以读取已审核的评论
+      allow read: if resource.data.isApproved == true;
+      
+      // 管理员可以读取所有评论
+      allow read: if request.auth != null && isAdmin();
+      
+      // 任何人都可以创建评论（但需要审核）
+      allow create: if request.auth == null 
+        && request.resource.data.isApproved == false
+        && isValidComment(request.resource.data);
+      
+      // 只有管理员可以更新和删除评论
+      allow update, delete: if request.auth != null && isAdmin();
+    }
+    
+    // 系统设置集合规则
+    match /settings/{settingId} {
+      // 所有人都可以读取系统设置
+      allow read: if true;
+      
+      // 只有管理员可以更新系统设置
+      allow update: if request.auth != null && isAdmin();
+    }
+    
+    // 分类集合规则
+    match /categories/{categoryId} {
+      // 所有人都可以读取分类
+      allow read: if true;
+      
+      // 只有管理员可以创建、更新、删除分类
+      allow create, update, delete: if request.auth != null && isAdmin();
+    }
+    
+    // 标签集合规则
+    match /tags/{tagId} {
+      // 所有人都可以读取标签
+      allow read: if true;
+      
+      // 只有管理员可以创建、更新、删除标签
+      allow create, update, delete: if request.auth != null && isAdmin();
+    }
+    
+    // 统计数据集合规则
+    match /analytics/{docId} {
+      // 只有管理员可以读取统计数据
+      allow read: if request.auth != null && isAdmin();
+      
+      // 系统可以写入统计数据（通过云函数）
+      allow write: if false; // 通过云函数处理
+    }
+    
+    // 辅助函数：检查是否为管理员
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // 辅助函数：验证评论数据
+    function isValidComment(data) {
+      return data.keys().hasAll(['content', 'author', 'targetType', 'targetId', 'createdAt'])
+        && data.content is string
+        && data.content.size() > 0
+        && data.content.size() <= 1000
+        && data.author is map
+        && data.author.keys().hasAll(['name', 'email'])
+        && data.author.name is string
+        && data.author.name.size() > 0
+        && data.author.name.size() <= 50
+        && data.author.email is string
+        && data.author.email.matches('.*@.*\\..*')
+        && data.targetType in ['article', 'photography']
+        && data.targetId is string
+        && data.targetId.size() > 0;
+    }
+    
+    // 辅助函数：验证摄影作品数据
+    function isValidPhotography(data) {
+      return data.keys().hasAll(['title', 'description', 'imageUrl', 'category'])
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 100
+        && data.description is string
+        && data.description.size() <= 1000
+        && data.imageUrl is string
+        && data.imageUrl.matches('https://.*')
+        && data.category is string
+        && data.category.size() > 0;
+    }
+    
+    // 辅助函数：验证文章数据
+    function isValidArticle(data) {
+      return data.keys().hasAll(['title', 'content', 'category', 'status'])
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 200
+        && data.content is string
+        && data.content.size() > 0
+        && data.category is string
+        && data.category.size() > 0
+        && data.status in ['draft', 'published']
+        && (data.tags == null || (data.tags is list && data.tags.size() <= 10));
+    }
+  }
+}
+
+// Storage 安全规则（需要单独配置）
+/*
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 图片上传规则
+    match /images/{allPaths=**} {
+      // 只有管理员可以上传图片
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // 缩略图规则
+    match /thumbnails/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // 辅助函数：检查是否为管理员
+    function isAdmin() {
+      return request.auth != null 
+        && exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
+*/
