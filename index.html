@@ -70,7 +70,105 @@
         @apply py-16 md:py-24;
       }
       .card-hover {
-        @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+        @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-3;
+        transform-style: preserve-3d;
+      }
+      .card-hover:hover {
+        transform: translateY(-12px) rotateX(2deg);
+      }
+      .hero-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-gradient::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        animation: grain 20s linear infinite;
+      }
+      @keyframes grain {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(-2%, -2%); }
+        50% { transform: translate(2%, -2%); }
+        75% { transform: translate(-2%, 2%); }
+      }
+      .text-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .floating-animation {
+        animation: floating 6s ease-in-out infinite;
+      }
+      @keyframes floating {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+      .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+      }
+      .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .parallax-element {
+        transform: translateZ(0);
+        will-change: transform;
+      }
+      .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      .scroll-indicator {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transform-origin: left;
+        transform: scaleX(0);
+        z-index: 9999;
+        transition: transform 0.1s ease-out;
+      }
+      .toolbar-btn {
+        @apply p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors;
+      }
+      .toolbar-btn:hover {
+        background-color: #f3f4f6;
+      }
+      .editor-content textarea:focus {
+        outline: none;
+      }
+      .prose img {
+        @apply rounded-lg shadow-md;
+      }
+      .prose code {
+        @apply bg-gray-100 px-2 py-1 rounded text-sm;
+      }
+      .prose pre {
+        @apply bg-gray-900 text-white p-4 rounded-lg overflow-x-auto;
+      }
+      .prose blockquote {
+        @apply border-l-4 border-blue-500 pl-4 italic text-gray-600;
       }
     }
   </style>
@@ -84,6 +182,17 @@
 </head>
 
 <body class="font-sans bg-light text-dark">
+  <!-- 滚动进度指示器 -->
+  <div class="scroll-indicator" id="scroll-indicator"></div>
+
+  <!-- 加载遮罩 -->
+  <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-gray-600">加载中...</p>
+    </div>
+  </div>
+
   <!-- 导航栏 -->
   <header class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,6 +212,9 @@
           <a href="#tech" class="nav-link">技术分享</a>
           <a href="#diary" class="nav-link">开发日记</a>
           <a href="#about" class="nav-link">关于我</a>
+          <button class="search-trigger nav-link" title="搜索 (Ctrl+K)">
+            <i class="fas fa-search"></i>
+          </button>
           <!-- 管理入口已隐藏 -->
         </nav>
 
@@ -132,10 +244,11 @@
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div class="order-2 lg:order-1">
-            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight font-display mb-6">
-              用镜头捕捉光影，<br>用代码构建世界
+            <h1 class="profile-name text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight font-display mb-6 fade-in-up">
+              用镜头捕捉光影，<br><span class="text-gradient">用代码构建世界</span>
             </h1>
-            <p class="text-lg text-gray-medium mb-8 max-w-lg text-balance">
+            <p class="profile-bio text-lg text-gray-medium mb-8 max-w-lg text-balance fade-in-up"
+              style="animation-delay: 0.2s;">
               我是一名摄影师兼程序员，这里记录我的摄影作品、开发心得和技术探索，分享光影与代码交织的创意世界。
             </p>
             <div class="flex flex-wrap gap-4">
@@ -648,14 +761,14 @@
             <div class="relative">
               <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
                 <img src="https://picsum.photos/id/177/800/1000" alt="作者照片，一位拿着相机的程序员"
-                  class="w-full h-full object-cover">
+                  class="profile-avatar w-full h-full object-cover">
               </div>
               <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg max-w-[220px] card-hover">
                 <div class="flex items-center gap-2 mb-3">
                   <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <i class="fa fa-lightbulb-o"></i>
                   </div>
-                  <h4 class="font-medium">摄影师 & 全栈开发者</h4>
+                  <h4 class="profile-title font-medium">摄影师 & 全栈开发者</h4>
                 </div>
                 <p class="text-sm text-gray-medium">
                   热爱光影与代码的创作者，擅长将技术与艺术相结合
@@ -666,10 +779,10 @@
 
           <div>
             <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-6 font-display">关于我</h2>
-            <p class="text-gray-medium text-lg mb-6 leading-relaxed">
+            <p class="profile-bio text-gray-medium text-lg mb-6 leading-relaxed">
               你好！我是一名兼具摄影爱好与编程技能的创作者。白天，我是一名全栈开发者，专注于Web应用开发和系统架构；夜晚和周末，我拿起相机，用镜头捕捉生活中的美好瞬间。
             </p>
-            <p class="text-gray-medium text-lg mb-8 leading-relaxed">
+            <p class="profile-bio text-gray-medium text-lg mb-8 leading-relaxed">
               这个博客是我分享的平台，在这里你可以看到我的摄影作品、开发项目、技术心得和编程教程。希望通过这个平台，能与更多志同道合的朋友交流学习。
             </p>
 
@@ -871,6 +984,11 @@
 
   <!-- Module Loader -->
   <script src="js/utils/simple-loader.js"></script>
+
+  <!-- Components -->
+  <script src="js/components/ui-enhancements.js"></script>
+  <script src="js/components/search-system.js"></script>
+  <script src="js/components/comment-system.js"></script>
 
   <!-- JavaScript -->
   <script src="js/app.js"></script>

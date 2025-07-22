@@ -29,9 +29,38 @@ class App {
       // 设置交叉观察器
       this.setupIntersectionObserver();
 
+      // 初始化组件
+      this.initializeComponents();
+
     } catch (error) {
       console.error('App initialization error:', error);
       this.showError('应用初始化失败，请刷新页面重试');
+    }
+  }
+
+  // 初始化组件
+  initializeComponents() {
+    try {
+      // 初始化UI增强功能
+      if (typeof UIEnhancements !== 'undefined') {
+        this.uiEnhancements = new UIEnhancements();
+        console.log('✅ UI增强功能初始化完成');
+      }
+
+      // 初始化搜索系统
+      if (typeof SearchSystem !== 'undefined') {
+        this.searchSystem = new SearchSystem();
+        console.log('✅ 搜索系统初始化完成');
+      }
+
+      // 初始化评论系统（如果页面有评论容器）
+      const commentContainer = document.getElementById('comments-section');
+      if (commentContainer && typeof CommentSystem !== 'undefined') {
+        this.commentSystem = new CommentSystem('comments-section', 'main-page');
+        console.log('✅ 评论系统初始化完成');
+      }
+    } catch (error) {
+      console.error('组件初始化失败:', error);
     }
   }
 
@@ -76,6 +105,7 @@ class App {
     this.stateManager.setState({
       photography: [],
       articles: [],
+      profile: null,
       currentPage: 1,
       hasMore: true
     });
@@ -167,15 +197,17 @@ class App {
     this.stateManager.set('loading', true);
 
     try {
-      // 并行加载摄影作品和文章
-      const [photography, articles] = await Promise.all([
+      // 并行加载摄影作品、文章和个人资料
+      const [photography, articles, profile] = await Promise.all([
         this.services.photography.getList(1, 6),
-        this.services.article.getList(1, 4)
+        this.services.article.getList(1, 4),
+        this.loadProfile()
       ]);
 
       this.stateManager.batch({
         photography,
         articles,
+        profile,
         loading: false
       });
 
@@ -187,6 +219,86 @@ class App {
       this.stateManager.batch({
         error: '加载内容失败，请检查网络连接',
         loading: false
+      });
+    }
+  }
+
+  // 加载个人资料
+  async loadProfile() {
+    try {
+      if (this.db) {
+        const doc = await this.db.collection('profile').doc('main').get();
+        if (doc.exists) {
+          const profile = doc.data();
+          this.updateProfileDisplay(profile);
+          return profile;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('加载个人资料失败:', error);
+      return null;
+    }
+  }
+
+  // 更新个人资料显示
+  updateProfileDisplay(profile) {
+    if (!profile) return;
+
+    // 更新头像
+    const avatars = document.querySelectorAll('.profile-avatar');
+    avatars.forEach(avatar => {
+      if (profile.avatar) {
+        avatar.src = profile.avatar;
+        avatar.alt = profile.name || '头像';
+      }
+    });
+
+    // 更新姓名
+    const names = document.querySelectorAll('.profile-name');
+    names.forEach(name => {
+      if (profile.name) {
+        name.textContent = profile.name;
+      }
+    });
+
+    // 更新标题
+    const titles = document.querySelectorAll('.profile-title');
+    titles.forEach(title => {
+      if (profile.title) {
+        title.textContent = profile.title;
+      }
+    });
+
+    // 更新简介
+    const bios = document.querySelectorAll('.profile-bio');
+    bios.forEach(bio => {
+      if (profile.bio) {
+        bio.textContent = profile.bio;
+      }
+    });
+
+    // 更新联系信息
+    if (profile.email) {
+      const emailLinks = document.querySelectorAll('.profile-email');
+      emailLinks.forEach(link => {
+        link.href = `mailto:${profile.email}`;
+      });
+    }
+
+    if (profile.github) {
+      const githubLinks = document.querySelectorAll('.profile-github');
+      githubLinks.forEach(link => {
+        link.href = profile.github;
+        link.style.display = 'inline-block';
+      });
+    }
+
+    if (profile.website) {
+      const websiteLinks = document.querySelectorAll('.profile-website');
+      websiteLinks.forEach(link => {
+        link.href = profile.website;
+        link.style.display = 'inline-block';
       });
     }
   }
