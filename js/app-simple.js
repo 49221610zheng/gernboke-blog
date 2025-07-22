@@ -88,6 +88,12 @@ class SimpleApp {
         this.components.searchSystem = new SearchSystem();
         console.log('✅ 搜索系统初始化完成');
       }
+
+      // 初始化内容交互
+      if (typeof ContentInteractions !== 'undefined') {
+        this.components.contentInteractions = new ContentInteractions();
+        console.log('✅ 内容交互初始化完成');
+      }
       
     } catch (error) {
       console.warn('⚠️ 部分组件初始化失败:', error);
