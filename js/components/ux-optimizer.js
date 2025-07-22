@@ -479,7 +479,417 @@ class UXOptimizer {
     // 个性化内容推荐
     this.setupContentRecommendations();
   }
-  
+
+  // 设置内容推荐系统
+  setupContentRecommendations() {
+    // 基于用户行为的内容推荐
+    this.contentRecommendations = {
+      readingHistory: JSON.parse(localStorage.getItem('readingHistory') || '[]'),
+      preferences: JSON.parse(localStorage.getItem('contentPreferences') || '{}'),
+      interactions: JSON.parse(localStorage.getItem('userInteractions') || '{}')
+    };
+
+    // 跟踪用户阅读行为
+    this.trackReadingBehavior();
+
+    // 生成推荐内容
+    this.generateRecommendations();
+
+    // 显示推荐内容
+    this.displayRecommendations();
+  }
+
+  // 跟踪用户阅读行为
+  trackReadingBehavior() {
+    // 跟踪文章阅读时间
+    let readingStartTime = null;
+    let currentArticle = null;
+
+    // 监听文章点击
+    document.addEventListener('click', (e) => {
+      const articleLink = e.target.closest('.article-link, .post-link, [data-article-id]');
+      if (articleLink) {
+        readingStartTime = Date.now();
+        currentArticle = {
+          id: articleLink.dataset.articleId || articleLink.href,
+          title: articleLink.textContent.trim(),
+          category: articleLink.dataset.category || 'general',
+          timestamp: readingStartTime
+        };
+      }
+    });
+
+    // 跟踪页面停留时间
+    let pageStartTime = Date.now();
+    window.addEventListener('beforeunload', () => {
+      if (currentArticle && readingStartTime) {
+        const readingTime = Date.now() - readingStartTime;
+        this.recordReadingSession(currentArticle, readingTime);
+      }
+    });
+
+    // 跟踪滚动行为
+    let scrollDepth = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const currentDepth = Math.round((currentScroll / maxScroll) * 100);
+      scrollDepth = Math.max(scrollDepth, currentDepth);
+    });
+
+    // 定期保存滚动深度
+    setInterval(() => {
+      if (currentArticle && scrollDepth > 0) {
+        currentArticle.scrollDepth = scrollDepth;
+      }
+    }, 5000);
+  }
+
+  // 记录阅读会话
+  recordReadingSession(article, readingTime) {
+    const session = {
+      ...article,
+      readingTime,
+      scrollDepth: article.scrollDepth || 0,
+      completedReading: article.scrollDepth > 80,
+      date: new Date().toISOString()
+    };
+
+    // 更新阅读历史
+    this.contentRecommendations.readingHistory.unshift(session);
+
+    // 保持最近100条记录
+    if (this.contentRecommendations.readingHistory.length > 100) {
+      this.contentRecommendations.readingHistory = this.contentRecommendations.readingHistory.slice(0, 100);
+    }
+
+    // 更新偏好
+    this.updateContentPreferences(session);
+
+    // 保存到本地存储
+    localStorage.setItem('readingHistory', JSON.stringify(this.contentRecommendations.readingHistory));
+    localStorage.setItem('contentPreferences', JSON.stringify(this.contentRecommendations.preferences));
+  }
+
+  // 更新内容偏好
+  updateContentPreferences(session) {
+    const { category, readingTime, completedReading } = session;
+
+    if (!this.contentRecommendations.preferences[category]) {
+      this.contentRecommendations.preferences[category] = {
+        interest: 0,
+        totalTime: 0,
+        completedCount: 0,
+        totalCount: 0
+      };
+    }
+
+    const pref = this.contentRecommendations.preferences[category];
+    pref.totalTime += readingTime;
+    pref.totalCount += 1;
+
+    if (completedReading) {
+      pref.completedCount += 1;
+      pref.interest += 2; // 完整阅读增加更多兴趣分
+    } else if (readingTime > 30000) { // 超过30秒
+      pref.interest += 1;
+    }
+
+    // 计算兴趣度（0-100）
+    pref.interestLevel = Math.min(100, (pref.interest / pref.totalCount) * 10);
+  }
+
+  // 生成推荐内容
+  generateRecommendations() {
+    const preferences = this.contentRecommendations.preferences;
+    const history = this.contentRecommendations.readingHistory;
+
+    // 获取最感兴趣的分类
+    const topCategories = Object.entries(preferences)
+      .sort((a, b) => b[1].interestLevel - a[1].interestLevel)
+      .slice(0, 3)
+      .map(([category]) => category);
+
+    // 获取最近阅读的文章类型
+    const recentCategories = history
+      .slice(0, 10)
+      .map(session => session.category)
+      .filter((category, index, arr) => arr.indexOf(category) === index);
+
+    // 合并推荐分类
+    this.recommendedCategories = [...new Set([...topCategories, ...recentCategories])];
+
+    // 生成推荐理由
+    this.generateRecommendationReasons();
+  }
+
+  // 生成推荐理由
+  generateRecommendationReasons() {
+    this.recommendationReasons = {
+      'technology': '基于您对技术文章的阅读偏好',
+      'photography': '您经常浏览摄影相关内容',
+      'travel': '根据您的旅行文章阅读历史',
+      'lifestyle': '符合您的生活方式偏好',
+      'general': '为您精选的优质内容'
+    };
+  }
+
+  // 显示推荐内容
+  displayRecommendations() {
+    // 创建推荐内容区域
+    const recommendationContainer = document.createElement('div');
+    recommendationContainer.className = 'content-recommendations';
+    recommendationContainer.innerHTML = `
+      <div class="recommendations-header">
+        <h3><i class="fas fa-magic"></i> 为您推荐</h3>
+        <p class="recommendations-subtitle">基于您的阅读偏好</p>
+      </div>
+      <div class="recommendations-list" id="recommendationsList">
+        <!-- 推荐内容将在这里动态加载 -->
+      </div>
+    `;
+
+    // 添加样式
+    const style = document.createElement('style');
+    style.textContent = `
+      .content-recommendations {
+        background: var(--card-bg, #ffffff);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color, #e5e7eb);
+      }
+
+      .recommendations-header {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .recommendations-header h3 {
+        color: var(--primary-color, #3b82f6);
+        margin: 0 0 8px 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .recommendations-header h3 i {
+        margin-right: 8px;
+        color: #f59e0b;
+      }
+
+      .recommendations-subtitle {
+        color: var(--text-secondary, #6b7280);
+        margin: 0;
+        font-size: 0.875rem;
+      }
+
+      .recommendations-list {
+        display: grid;
+        gap: 16px;
+      }
+
+      .recommendation-item {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        background: var(--bg-secondary, #f8fafc);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+
+      .recommendation-item:hover {
+        background: var(--bg-hover, #e2e8f0);
+        border-color: var(--primary-color, #3b82f6);
+        transform: translateY(-2px);
+      }
+
+      .recommendation-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color, #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 16px;
+        flex-shrink: 0;
+      }
+
+      .recommendation-content {
+        flex: 1;
+      }
+
+      .recommendation-title {
+        font-weight: 600;
+        color: var(--text-primary, #1f2937);
+        margin: 0 0 4px 0;
+        font-size: 0.95rem;
+      }
+
+      .recommendation-reason {
+        color: var(--text-secondary, #6b7280);
+        font-size: 0.8rem;
+        margin: 0;
+      }
+
+      .recommendation-badge {
+        background: var(--primary-color, #3b82f6);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .content-recommendations {
+          margin: 16px 0;
+          padding: 20px;
+        }
+
+        .recommendation-item {
+          padding: 12px;
+        }
+
+        .recommendation-icon {
+          width: 36px;
+          height: 36px;
+          margin-right: 12px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 生成推荐项目
+    this.populateRecommendations(recommendationContainer);
+
+    // 插入到合适的位置
+    const targetContainer = document.querySelector('.main-content, .content-area, main') || document.body;
+    const firstArticle = targetContainer.querySelector('.article, .post, .content-item');
+
+    if (firstArticle) {
+      firstArticle.parentNode.insertBefore(recommendationContainer, firstArticle.nextSibling);
+    } else {
+      targetContainer.appendChild(recommendationContainer);
+    }
+  }
+
+  // 填充推荐内容
+  populateRecommendations(container) {
+    const listContainer = container.querySelector('#recommendationsList');
+
+    // 示例推荐内容
+    const recommendations = [
+      {
+        icon: 'fas fa-camera',
+        title: '摄影技巧：光影的艺术',
+        reason: this.recommendationReasons['photography'] || '为您推荐',
+        category: 'photography',
+        badge: '热门'
+      },
+      {
+        icon: 'fas fa-code',
+        title: '前端开发最佳实践',
+        reason: this.recommendationReasons['technology'] || '为您推荐',
+        category: 'technology',
+        badge: '新文章'
+      },
+      {
+        icon: 'fas fa-map-marker-alt',
+        title: '城市探索指南',
+        reason: this.recommendationReasons['travel'] || '为您推荐',
+        category: 'travel',
+        badge: '精选'
+      }
+    ];
+
+    // 根据用户偏好排序
+    const sortedRecommendations = recommendations.sort((a, b) => {
+      const aInterest = this.contentRecommendations.preferences[a.category]?.interestLevel || 0;
+      const bInterest = this.contentRecommendations.preferences[b.category]?.interestLevel || 0;
+      return bInterest - aInterest;
+    });
+
+    // 渲染推荐项目
+    listContainer.innerHTML = sortedRecommendations.map(item => `
+      <div class="recommendation-item" data-category="${item.category}">
+        <div class="recommendation-icon">
+          <i class="${item.icon}"></i>
+        </div>
+        <div class="recommendation-content">
+          <h4 class="recommendation-title">${item.title}</h4>
+          <p class="recommendation-reason">${item.reason}</p>
+        </div>
+        <span class="recommendation-badge">${item.badge}</span>
+      </div>
+    `).join('');
+
+    // 添加点击事件
+    listContainer.addEventListener('click', (e) => {
+      const item = e.target.closest('.recommendation-item');
+      if (item) {
+        const category = item.dataset.category;
+        this.handleRecommendationClick(category);
+      }
+    });
+  }
+
+  // 处理推荐点击
+  handleRecommendationClick(category) {
+    // 记录点击行为
+    const interactions = this.contentRecommendations.interactions;
+    interactions[category] = (interactions[category] || 0) + 1;
+    localStorage.setItem('userInteractions', JSON.stringify(interactions));
+
+    // 显示相关内容或跳转
+    console.log(`用户点击了${category}类别的推荐内容`);
+
+    // 可以在这里添加实际的跳转逻辑
+    // 例如：筛选显示该类别的文章
+    this.filterContentByCategory(category);
+  }
+
+  // 按分类筛选内容
+  filterContentByCategory(category) {
+    const articles = document.querySelectorAll('.article, .post, .content-item');
+
+    articles.forEach(article => {
+      const articleCategory = article.dataset.category || 'general';
+      if (category === 'all' || articleCategory === category) {
+        article.style.display = '';
+        article.classList.add('highlight-recommended');
+      } else {
+        article.style.display = 'none';
+      }
+    });
+
+    // 添加高亮样式
+    const highlightStyle = document.createElement('style');
+    highlightStyle.textContent = `
+      .highlight-recommended {
+        animation: recommendationHighlight 2s ease-in-out;
+      }
+
+      @keyframes recommendationHighlight {
+        0% { background-color: transparent; }
+        50% { background-color: rgba(59, 130, 246, 0.1); }
+        100% { background-color: transparent; }
+      }
+    `;
+    document.head.appendChild(highlightStyle);
+
+    // 3秒后移除高亮
+    setTimeout(() => {
+      articles.forEach(article => {
+        article.classList.remove('highlight-recommended');
+      });
+    }, 3000);
+  }
+
   // 反馈系统
   setupFeedbackSystem() {
     // 创建反馈按钮
