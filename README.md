@@ -4,7 +4,27 @@
 
 [![Deploy to GitHub Pages](https://github.com/49221610zheng/gernboke-blog/actions/workflows/pages.yml/badge.svg)](https://github.com/49221610zheng/gernboke-blog/actions/workflows/pages.yml)
 
-🌐 **在线访问**: [https://49221610zheng.github.io/gernboke-blog/](https://49221610zheng.github.io/gernboke-blog/)
+🌐 **在线访问**:
+[https://49221610zheng.github.io/gernboke-blog/](https://49221610zheng.github.io/gernboke-blog/)
+
+## 🚨 部署问题？立即修复！
+
+如果部署失败，请按照以下步骤：
+
+### 快速修复
+
+1. **双击运行**: `emergency-deploy.bat`
+2. **或查看**: `GITHUB_PAGES_FIX.txt`
+
+### 手动修复
+
+1. 访问
+   [Pages 设置](https://github.com/49221610zheng/gernboke-blog/settings/pages)
+2. 选择 "GitHub Actions" 作为源
+3. 访问
+   [Actions 设置](https://github.com/49221610zheng/gernboke-blog/settings/actions)
+4. 启用 "Read and write permissions"
+5. 手动触发工作流
 
 ![项目预览](https://picsum.photos/800/400?random=1)
 
@@ -24,12 +44,14 @@
 ### 方法一：使用启动脚本（推荐）
 
 **Windows 用户：**
+
 ```bash
 # 双击运行或在命令行中执行
 start-dev.bat
 ```
 
 **Linux/macOS 用户：**
+
 ```bash
 # 给脚本执行权限
 chmod +x start-dev.sh
@@ -43,6 +65,7 @@ chmod +x start-dev.sh
 #### 1. 环境准备
 
 确保已安装以下软件：
+
 - [Node.js](https://nodejs.org/) (v14+)
 - [Git](https://git-scm.com/)
 
@@ -69,6 +92,7 @@ firebase login
 
 1. 在 [Firebase Console](https://console.firebase.google.com/) 创建新项目
 2. 启用以下服务：
+
    - Firestore Database
    - Authentication (Email/Password)
    - Storage
@@ -78,13 +102,13 @@ firebase login
 
 ```javascript
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id",
-  measurementId: "your-measurement-id"
+  apiKey: 'your-api-key',
+  authDomain: 'your-project.firebaseapp.com',
+  projectId: 'your-project-id',
+  storageBucket: 'your-project.appspot.com',
+  messagingSenderId: '123456789',
+  appId: 'your-app-id',
+  measurementId: 'your-measurement-id'
 };
 ```
 
@@ -95,6 +119,7 @@ firebase init
 ```
 
 选择以下服务：
+
 - Firestore
 - Storage
 - Hosting
@@ -143,6 +168,7 @@ npx http-server -p 8000
 ### 自定义配置
 
 编辑 `js/config/app-config.js` 文件来自定义：
+
 - 网站信息
 - 主题颜色
 - 功能开关
@@ -200,7 +226,7 @@ const result = await storageService.uploadImage(file, 'images');
 stateManager.setState({ loading: true });
 
 // 监听状态变化
-stateManager.subscribe('loading', (loading) => {
+stateManager.subscribe('loading', loading => {
   // 处理加载状态变化
 });
 ```
