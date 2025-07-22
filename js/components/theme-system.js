@@ -2,6 +2,7 @@
 class ThemeSystem {
   constructor() {
     this.currentTheme = this.loadTheme();
+    this.addThemeStyles();
     this.themes = {
       light: {
         name: '浅色模式',
@@ -458,67 +459,6 @@ class ThemeSystem {
     `;
 
     document.head.appendChild(styles);
-  }
-
-  constructor() {
-    this.currentTheme = this.loadTheme();
-    this.themes = {
-      light: {
-        name: '浅色模式',
-        icon: 'fas fa-sun',
-        colors: {
-          primary: '#3B82F6',
-          secondary: '#6B7280',
-          background: '#FFFFFF',
-          surface: '#F9FAFB',
-          text: '#111827',
-          textSecondary: '#6B7280'
-        }
-      },
-      dark: {
-        name: '深色模式',
-        icon: 'fas fa-moon',
-        colors: {
-          primary: '#60A5FA',
-          secondary: '#9CA3AF',
-          background: '#111827',
-          surface: '#1F2937',
-          text: '#F9FAFB',
-          textSecondary: '#D1D5DB'
-        }
-      },
-      auto: {
-        name: '跟随系统',
-        icon: 'fas fa-desktop',
-        colors: null
-      },
-      sepia: {
-        name: '护眼模式',
-        icon: 'fas fa-eye',
-        colors: {
-          primary: '#D97706',
-          secondary: '#92400E',
-          background: '#FEF3C7',
-          surface: '#FDE68A',
-          text: '#92400E',
-          textSecondary: '#B45309'
-        }
-      },
-      highContrast: {
-        name: '高对比度',
-        icon: 'fas fa-adjust',
-        colors: {
-          primary: '#000000',
-          secondary: '#666666',
-          background: '#FFFFFF',
-          surface: '#F0F0F0',
-          text: '#000000',
-          textSecondary: '#333333'
-        }
-      }
-    };
-    this.addThemeStyles();
-    this.init();
   }
 }
 

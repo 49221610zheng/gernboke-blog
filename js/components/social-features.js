@@ -4,6 +4,7 @@ class SocialFeatures {
     this.likes = this.loadLikes();
     this.shares = this.loadShares();
     this.bookmarks = this.loadBookmarks();
+    this.addSocialStyles();
     this.init();
   }
 
@@ -490,14 +491,6 @@ class SocialFeatures {
     `;
 
     document.head.appendChild(styles);
-  }
-
-  constructor() {
-    this.likes = this.loadLikes();
-    this.shares = this.loadShares();
-    this.bookmarks = this.loadBookmarks();
-    this.addSocialStyles();
-    this.init();
   }
 }
 

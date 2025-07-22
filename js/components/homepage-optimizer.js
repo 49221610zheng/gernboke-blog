@@ -4,6 +4,7 @@ class HomepageOptimizer {
     this.isInitialized = false;
     this.animations = [];
     this.observers = [];
+    this.addAnimationStyles();
     this.init();
   }
 
@@ -519,14 +520,6 @@ class HomepageOptimizer {
     this.animations.forEach(animation => animation.cancel());
     this.observers = [];
     this.animations = [];
-  }
-
-  constructor() {
-    this.isInitialized = false;
-    this.animations = [];
-    this.observers = [];
-    this.addAnimationStyles();
-    this.init();
   }
 }
 

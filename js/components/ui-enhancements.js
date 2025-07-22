@@ -130,12 +130,20 @@ class UIEnhancements {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
-        const target = document.querySelector(anchor.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+        const href = anchor.getAttribute('href');
+        // 检查href是否有效
+        if (href && href !== '#' && href.length > 1) {
+          try {
+            const target = document.querySelector(href);
+            if (target) {
+              target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          } catch (error) {
+            console.warn('无效的选择器:', href);
+          }
         }
       });
     });

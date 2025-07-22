@@ -144,7 +144,84 @@ class UXOptimizer {
     `;
     document.head.appendChild(style);
   }
-  
+
+  // 设置焦点陷阱
+  setupFocusTrap() {
+    // 焦点陷阱实现
+    this.focusTrapElements = [];
+
+    // 监听模态框的打开
+    document.addEventListener('modalOpen', (e) => {
+      const modal = e.detail.modal;
+      this.trapFocus(modal);
+    });
+  }
+
+  // 陷阱焦点在模态框内
+  trapFocus(modal) {
+    const focusableElements = modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    });
+
+    firstElement.focus();
+  }
+
+  // 基于性能优化
+  optimizeBasedOnPerformance() {
+    const metrics = this.performanceMetrics;
+
+    // 如果FCP较慢，减少动画
+    if (metrics.fcp > 2000) {
+      document.documentElement.classList.add('reduce-animations');
+    }
+
+    // 如果内存使用较高，启用节能模式
+    if (performance.memory && performance.memory.usedJSHeapSize > 50000000) {
+      document.documentElement.classList.add('memory-saver');
+    }
+  }
+
+  // 优化长任务
+  optimizeLongTask() {
+    // 延迟非关键任务
+    if (this.longTaskCount > 3) {
+      document.documentElement.classList.add('performance-mode');
+
+      // 禁用一些非关键动画
+      const style = document.createElement('style');
+      style.textContent = `
+        .performance-mode * {
+          animation-duration: 0.1s !important;
+          transition-duration: 0.1s !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    this.longTaskCount = (this.longTaskCount || 0) + 1;
+  }
+
   // 屏幕阅读器支持
   setupScreenReaderSupport() {
     // 添加ARIA标签
