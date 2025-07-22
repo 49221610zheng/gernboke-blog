@@ -7,12 +7,12 @@ class CommentSystem {
     this.currentUser = null;
     this.init();
   }
-  
+
   init() {
     this.loadComments();
     this.render();
   }
-  
+
   async loadComments() {
     try {
       // 模拟加载评论数据
@@ -21,7 +21,7 @@ class CommentSystem {
       console.error('加载评论失败:', error);
     }
   }
-  
+
   async getCommentsFromDB() {
     // 模拟评论数据
     return [
@@ -64,11 +64,11 @@ class CommentSystem {
       }
     ];
   }
-  
+
   render() {
     const container = document.getElementById(this.containerId);
     if (!container) return;
-    
+
     container.innerHTML = `
       <div class="comment-system">
         <!-- 评论统计 -->
@@ -90,29 +90,31 @@ class CommentSystem {
         </div>
       </div>
     `;
-    
+
     this.bindEvents();
   }
-  
+
   renderCommentForm(parentId = null, placeholder = '写下您的评论...') {
     const formId = parentId ? `reply-form-${parentId}` : 'main-comment-form';
     const isReply = !!parentId;
-    
+
     return `
       <div id="${formId}" class="comment-form-container ${isReply ? 'ml-12 mt-4 border-l-2 border-gray-200 pl-4' : ''}">
-        <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
+            <div class="form-group">
               <label class="block text-sm font-medium text-gray-700 mb-1">姓名 *</label>
               <input type="text" id="${formId}-name" required
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                     class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-colors"
                      placeholder="您的姓名">
+              <div class="error-message text-red-500 text-xs mt-1 hidden"></div>
             </div>
-            <div>
+            <div class="form-group">
               <label class="block text-sm font-medium text-gray-700 mb-1">邮箱 *</label>
               <input type="email" id="${formId}-email" required
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                     class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-colors"
                      placeholder="您的邮箱">
+              <div class="error-message text-red-500 text-xs mt-1 hidden"></div>
             </div>
           </div>
           
@@ -145,7 +147,7 @@ class CommentSystem {
       </div>
     `;
   }
-  
+
   renderCommentList() {
     if (this.comments.length === 0) {
       return `
@@ -156,10 +158,10 @@ class CommentSystem {
         </div>
       `;
     }
-    
+
     return this.comments.map(comment => this.renderComment(comment)).join('');
   }
-  
+
   renderComment(comment) {
     return `
       <div class="comment-item" data-comment-id="${comment.id}">
@@ -214,7 +216,7 @@ class CommentSystem {
       </div>
     `;
   }
-  
+
   renderReply(reply, parentId) {
     return `
       <div class="reply-item ml-8 border-l-2 border-gray-100 pl-4" data-reply-id="${reply.id}">
@@ -253,7 +255,7 @@ class CommentSystem {
       </div>
     `;
   }
-  
+
   bindEvents() {
     // 绑定表单提交事件
     document.addEventListener('keydown', (e) => {
@@ -267,7 +269,7 @@ class CommentSystem {
       }
     });
   }
-  
+
   showReplyForm(commentId) {
     // 隐藏其他回复表单
     document.querySelectorAll('.reply-form-container').forEach(container => {
@@ -275,13 +277,13 @@ class CommentSystem {
         container.innerHTML = '';
       }
     });
-    
+
     const container = document.getElementById(`reply-container-${commentId}`);
     if (container) {
       const comment = this.comments.find(c => c.id === commentId);
       const placeholder = `回复 @${comment.author}...`;
       container.innerHTML = this.renderCommentForm(commentId, placeholder);
-      
+
       // 聚焦到内容输入框
       setTimeout(() => {
         const contentInput = document.getElementById(`reply-form-${commentId}-content`);
@@ -291,14 +293,14 @@ class CommentSystem {
       }, 100);
     }
   }
-  
+
   cancelReply(commentId) {
     const container = document.getElementById(`reply-container-${commentId}`);
     if (container) {
       container.innerHTML = '';
     }
   }
-  
+
   replyToReply(parentId, replyToAuthor) {
     this.showReplyForm(parentId);
     setTimeout(() => {
@@ -310,28 +312,28 @@ class CommentSystem {
       }
     }, 100);
   }
-  
+
   async submitComment(formId, parentId = '') {
     const nameInput = document.getElementById(`${formId}-name`);
     const emailInput = document.getElementById(`${formId}-email`);
     const contentInput = document.getElementById(`${formId}-content`);
-    
+
     if (!nameInput || !emailInput || !contentInput) return;
-    
+
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const content = contentInput.value.trim();
-    
+
     if (!name || !email || !content) {
       this.showMessage('请填写所有必填字段', 'warning');
       return;
     }
-    
+
     if (!this.isValidEmail(email)) {
       this.showMessage('请输入有效的邮箱地址', 'warning');
       return;
     }
-    
+
     try {
       const commentData = {
         author: name,
@@ -342,38 +344,38 @@ class CommentSystem {
         createdAt: new Date(),
         avatar: `https://picsum.photos/id/${Math.floor(Math.random() * 100)}/40/40`
       };
-      
+
       // 这里应该发送到后端API
       await this.saveComment(commentData);
-      
+
       // 清空表单
       nameInput.value = '';
       emailInput.value = '';
       contentInput.value = '';
-      
+
       // 如果是回复，隐藏回复表单
       if (parentId) {
         this.cancelReply(parentId);
       }
-      
+
       this.showMessage('评论提交成功，等待审核后显示', 'success');
-      
+
     } catch (error) {
       console.error('提交评论失败:', error);
       this.showMessage('评论提交失败，请稍后重试', 'error');
     }
   }
-  
+
   async saveComment(commentData) {
     // 模拟保存评论到数据库
     console.log('保存评论:', commentData);
-    
+
     // 这里应该调用Firebase或其他后端API
     // await firebase.firestore().collection('comments').add(commentData);
-    
+
     return new Promise(resolve => setTimeout(resolve, 1000));
   }
-  
+
   async likeComment(commentId) {
     try {
       // 这里应该调用API更新点赞数
@@ -384,7 +386,7 @@ class CommentSystem {
       this.showMessage('点赞失败', 'error');
     }
   }
-  
+
   reportComment(commentId) {
     if (confirm('确定要举报这条评论吗？')) {
       // 这里应该调用举报API
@@ -392,7 +394,7 @@ class CommentSystem {
       this.showMessage('举报已提交，我们会尽快处理', 'success');
     }
   }
-  
+
   getTotalCommentCount() {
     let total = this.comments.length;
     this.comments.forEach(comment => {
@@ -402,26 +404,26 @@ class CommentSystem {
     });
     return total;
   }
-  
+
   formatDate(date) {
     const now = new Date();
     const diff = now - date;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
-    
+
     if (minutes < 1) return '刚刚';
     if (minutes < 60) return `${minutes}分钟前`;
     if (hours < 24) return `${hours}小时前`;
     if (days < 7) return `${days}天前`;
-    
+
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
     });
   }
-  
+
   formatContent(content) {
     // 简单的内容格式化
     return content
@@ -430,22 +432,21 @@ class CommentSystem {
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>');
   }
-  
+
   isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
-  
+
   showMessage(message, type) {
     const messageDiv = document.createElement('div');
-    messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${
-      type === 'success' ? 'bg-green-500' : 
-      type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
-    }`;
+    messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' :
+        type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+      }`;
     messageDiv.textContent = message;
-    
+
     document.body.appendChild(messageDiv);
-    
+
     setTimeout(() => {
       messageDiv.remove();
     }, 3000);

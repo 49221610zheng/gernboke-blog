@@ -194,7 +194,8 @@
   </div>
 
   <!-- 导航栏 -->
-  <header class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300" id="navbar">
+  <header class="navbar fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300"
+    id="navbar">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16 md:h-20">
         <!-- Logo -->
@@ -219,14 +220,14 @@
         </nav>
 
         <!-- 移动端菜单按钮 -->
-        <button class="md:hidden text-dark hover:text-primary" id="menu-toggle">
+        <button class="mobile-menu-toggle md:hidden text-dark hover:text-primary" id="menu-toggle">
           <i class="fa fa-bars text-2xl"></i>
         </button>
       </div>
     </div>
 
     <!-- 移动端导航菜单 -->
-    <div class="md:hidden hidden bg-white border-t" id="mobile-menu">
+    <div class="mobile-menu md:hidden hidden bg-white border-t" id="mobile-menu">
       <div class="container mx-auto px-4 py-3 flex flex-col gap-3">
         <a href="#home" class="py-2 hover:text-primary transition-colors">首页</a>
         <a href="#photography" class="py-2 hover:text-primary transition-colors">摄影作品</a>
@@ -987,6 +988,9 @@
 
   <!-- Components -->
   <script src="js/components/ui-enhancements.js"></script>
+  <script src="js/components/ux-optimizer.js"></script>
+  <script src="js/components/responsive-navigation.js"></script>
+  <script src="js/components/image-optimizer.js"></script>
   <script src="js/components/search-system.js"></script>
   <script src="js/components/comment-system.js"></script>
 

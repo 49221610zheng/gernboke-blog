@@ -47,6 +47,24 @@ class App {
         console.log('✅ UI增强功能初始化完成');
       }
 
+      // 初始化用户体验优化器
+      if (typeof UXOptimizer !== 'undefined') {
+        this.uxOptimizer = new UXOptimizer();
+        console.log('✅ 用户体验优化器初始化完成');
+      }
+
+      // 初始化响应式导航
+      if (typeof ResponsiveNavigation !== 'undefined') {
+        this.responsiveNavigation = new ResponsiveNavigation();
+        console.log('✅ 响应式导航初始化完成');
+      }
+
+      // 初始化图片优化器
+      if (typeof ImageOptimizer !== 'undefined') {
+        this.imageOptimizer = new ImageOptimizer();
+        console.log('✅ 图片优化器初始化完成');
+      }
+
       // 初始化搜索系统
       if (typeof SearchSystem !== 'undefined') {
         this.searchSystem = new SearchSystem();
