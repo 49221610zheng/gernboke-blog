@@ -112,6 +112,24 @@ class SimpleApp {
         this.components.themeSystem = new ThemeSystem();
         console.log('✅ 主题系统初始化完成');
       }
+
+      // 初始化内容显示优化器
+      if (typeof ContentDisplayOptimizer !== 'undefined') {
+        this.components.contentDisplayOptimizer = new ContentDisplayOptimizer();
+        console.log('✅ 内容显示优化器初始化完成');
+      }
+
+      // 初始化高级图片画廊
+      if (typeof AdvancedGallery !== 'undefined') {
+        this.components.advancedGallery = new AdvancedGallery();
+        console.log('✅ 高级图片画廊初始化完成');
+      }
+
+      // 初始化文章阅读器
+      if (typeof ArticleReader !== 'undefined') {
+        this.components.articleReader = new ArticleReader();
+        console.log('✅ 文章阅读器初始化完成');
+      }
       
     } catch (error) {
       console.warn('⚠️ 部分组件初始化失败:', error);

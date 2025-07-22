@@ -1,0 +1,365 @@
+/* 增强样式 - 内容显示优化和交互增强 */
+
+/* 内容显示优化样式 */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.image-zoom {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-zoom img {
+  transition: transform 0.3s ease;
+}
+
+.image-zoom:hover img {
+  transform: scale(1.1);
+}
+
+.gallery-overlay {
+  transition: all 0.3s ease;
+}
+
+/* 高级画廊样式 */
+#advanced-gallery {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#advanced-gallery img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gallery-container {
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.9) 100%);
+}
+
+/* 文章阅读器样式 */
+#article-reader {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.theme-light {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.theme-light .reader-header {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.theme-sepia {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.theme-sepia .reader-header {
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+.theme-dark {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.theme-dark .reader-header {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.prose {
+  max-width: none;
+}
+
+.prose h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose p {
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+}
+
+.prose blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose ul, .prose ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose pre {
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.prose code {
+  background: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+/* 过滤按钮样式 */
+.filter-btn {
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* 加载动画 */
+.loading-animation {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 懒加载图片样式 */
+.lazy-load {
+  filter: blur(5px);
+  transition: filter 0.3s ease;
+}
+
+.lazy-load.loaded {
+  filter: blur(0);
+}
+
+/* 灯箱样式 */
+.lightbox {
+  animation: lightboxFadeIn 0.3s ease;
+}
+
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 阅读进度条 */
+.reading-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 主题切换动画 */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 按钮悬停效果 */
+.btn-hover {
+  transition: all 0.2s ease;
+}
+
+.btn-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片进入动画 */
+.card-enter {
+  animation: cardSlideIn 0.6s ease forwards;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 图片加载占位符 */
+.image-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .gallery-overlay {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  #article-reader .reader-header {
+    padding: 1rem;
+  }
+  
+  #article-reader .reader-main {
+    padding: 1rem;
+  }
+  
+  .prose h1 {
+    font-size: 1.875rem;
+  }
+  
+  .prose h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 480px) {
+  .prose {
+    font-size: 0.875rem;
+  }
+  
+  .prose h1 {
+    font-size: 1.5rem;
+  }
+  
+  .prose h2 {
+    font-size: 1.25rem;
+  }
+  
+  .prose h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .auto-theme .prose {
+    color: #f9fafb;
+  }
+  
+  .auto-theme .prose blockquote {
+    color: #d1d5db;
+  }
+  
+  .auto-theme .prose pre {
+    background: #374151;
+  }
+  
+  .auto-theme .prose code {
+    background: #374151;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  #advanced-gallery,
+  #article-reader .reader-header,
+  .gallery-overlay,
+  .filter-container {
+    display: none !important;
+  }
+  
+  .prose {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  
+  .prose h1 {
+    font-size: 18pt;
+  }
+  
+  .prose h2 {
+    font-size: 16pt;
+  }
+  
+  .prose h3 {
+    font-size: 14pt;
+  }
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .image-zoom img,
+  .gallery-overlay,
+  .loading-animation,
+  .card-enter {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .card-hover {
+    border: 2px solid #000;
+  }
+  
+  .filter-btn {
+    border: 2px solid #000;
+  }
+  
+  .prose blockquote {
+    border-left-color: #000;
+  }
+}
