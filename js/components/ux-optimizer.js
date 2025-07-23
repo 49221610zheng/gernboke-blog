@@ -908,7 +908,447 @@ class UXOptimizer {
     // 页面满意度调查
     this.setupSatisfactionSurvey();
   }
-  
+
+  // 设置满意度调查系统
+  setupSatisfactionSurvey() {
+    // 检查是否已经显示过调查
+    const lastSurveyTime = localStorage.getItem('lastSatisfactionSurvey');
+    const now = Date.now();
+    const oneWeek = 7 * 24 * 60 * 60 * 1000; // 一周的毫秒数
+
+    // 如果一周内已经显示过，则不再显示
+    if (lastSurveyTime && (now - parseInt(lastSurveyTime)) < oneWeek) {
+      return;
+    }
+
+    // 延迟显示调查（用户浏览30秒后）
+    setTimeout(() => {
+      this.showSatisfactionSurvey();
+    }, 30000);
+  }
+
+  // 显示满意度调查
+  showSatisfactionSurvey() {
+    // 检查用户是否还在页面上
+    if (document.hidden) {
+      return;
+    }
+
+    // 创建调查弹窗
+    const surveyModal = document.createElement('div');
+    surveyModal.className = 'satisfaction-survey-modal';
+    surveyModal.innerHTML = `
+      <div class="survey-backdrop" onclick="this.parentElement.remove()"></div>
+      <div class="survey-content">
+        <div class="survey-header">
+          <h3><i class="fas fa-heart"></i> 您对我们的网站满意吗？</h3>
+          <button class="survey-close" onclick="this.closest('.satisfaction-survey-modal').remove()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="survey-body">
+          <p>您的反馈对我们很重要，请花几秒钟告诉我们您的体验如何。</p>
+
+          <div class="satisfaction-rating">
+            <div class="rating-question">整体满意度：</div>
+            <div class="rating-stars">
+              <button class="star-btn" data-rating="1"><i class="far fa-star"></i></button>
+              <button class="star-btn" data-rating="2"><i class="far fa-star"></i></button>
+              <button class="star-btn" data-rating="3"><i class="far fa-star"></i></button>
+              <button class="star-btn" data-rating="4"><i class="far fa-star"></i></button>
+              <button class="star-btn" data-rating="5"><i class="far fa-star"></i></button>
+            </div>
+            <div class="rating-text">请点击星星评分</div>
+          </div>
+
+          <div class="survey-questions" style="display: none;">
+            <div class="question-group">
+              <label>最喜欢的功能：</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" value="photography"> 摄影作品展示</label>
+                <label><input type="checkbox" value="articles"> 技术文章</label>
+                <label><input type="checkbox" value="design"> 网站设计</label>
+                <label><input type="checkbox" value="performance"> 加载速度</label>
+              </div>
+            </div>
+
+            <div class="question-group">
+              <label>改进建议：</label>
+              <textarea placeholder="请告诉我们如何改进..." rows="3"></textarea>
+            </div>
+
+            <div class="survey-actions">
+              <button class="btn-secondary" onclick="this.closest('.satisfaction-survey-modal').remove()">
+                跳过
+              </button>
+              <button class="btn-primary" onclick="this.closest('.satisfaction-survey-modal').querySelector('.survey-submit').click()">
+                提交反馈
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button class="survey-submit" style="display: none;"></button>
+      </div>
+    `;
+
+    // 添加样式
+    const style = document.createElement('style');
+    style.textContent = `
+      .satisfaction-survey-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: surveyFadeIn 0.3s ease-out;
+      }
+
+      .survey-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+      }
+
+      .survey-content {
+        position: relative;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        max-width: 480px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: surveySlideUp 0.3s ease-out;
+      }
+
+      .survey-header {
+        padding: 24px 24px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .survey-header h3 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .survey-header h3 i {
+        color: #ef4444;
+        margin-right: 8px;
+      }
+
+      .survey-close {
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+      }
+
+      .survey-close:hover {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      .survey-body {
+        padding: 24px;
+      }
+
+      .survey-body p {
+        margin: 0 0 24px 0;
+        color: #6b7280;
+        line-height: 1.6;
+      }
+
+      .satisfaction-rating {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .rating-question {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 16px;
+      }
+
+      .rating-stars {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .star-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #d1d5db;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 8px;
+        border-radius: 50%;
+      }
+
+      .star-btn:hover,
+      .star-btn.active {
+        color: #fbbf24;
+        transform: scale(1.1);
+      }
+
+      .rating-text {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .survey-questions {
+        animation: surveySlideDown 0.3s ease-out;
+      }
+
+      .question-group {
+        margin-bottom: 20px;
+      }
+
+      .question-group label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .checkbox-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .checkbox-group label {
+        display: flex;
+        align-items: center;
+        font-weight: normal;
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+
+      .checkbox-group input {
+        margin-right: 8px;
+      }
+
+      .question-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .survey-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+
+      .btn-secondary {
+        padding: 8px 16px;
+        background: #f3f4f6;
+        color: #374151;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-secondary:hover {
+        background: #e5e7eb;
+      }
+
+      .btn-primary {
+        padding: 8px 16px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      @keyframes surveyFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes surveySlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes surveySlideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .survey-content {
+          margin: 20px;
+          width: calc(100% - 40px);
+        }
+
+        .checkbox-group {
+          grid-template-columns: 1fr;
+        }
+
+        .survey-actions {
+          flex-direction: column;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 添加事件监听
+    this.setupSurveyEvents(surveyModal);
+
+    // 添加到页面
+    document.body.appendChild(surveyModal);
+
+    // 记录显示时间
+    localStorage.setItem('lastSatisfactionSurvey', Date.now().toString());
+  }
+
+  // 设置调查事件
+  setupSurveyEvents(modal) {
+    const stars = modal.querySelectorAll('.star-btn');
+    const questionsDiv = modal.querySelector('.survey-questions');
+    const submitBtn = modal.querySelector('.survey-submit');
+    let selectedRating = 0;
+
+    // 星星评分事件
+    stars.forEach((star, index) => {
+      star.addEventListener('click', () => {
+        selectedRating = index + 1;
+
+        // 更新星星显示
+        stars.forEach((s, i) => {
+          if (i <= index) {
+            s.classList.add('active');
+            s.querySelector('i').className = 'fas fa-star';
+          } else {
+            s.classList.remove('active');
+            s.querySelector('i').className = 'far fa-star';
+          }
+        });
+
+        // 更新评分文字
+        const ratingTexts = ['很不满意', '不满意', '一般', '满意', '非常满意'];
+        modal.querySelector('.rating-text').textContent = ratingTexts[index];
+
+        // 显示详细问题
+        setTimeout(() => {
+          questionsDiv.style.display = 'block';
+        }, 500);
+      });
+
+      // 悬停效果
+      star.addEventListener('mouseenter', () => {
+        stars.forEach((s, i) => {
+          if (i <= index) {
+            s.style.color = '#fbbf24';
+          } else {
+            s.style.color = '#d1d5db';
+          }
+        });
+      });
+
+      star.addEventListener('mouseleave', () => {
+        stars.forEach((s, i) => {
+          if (s.classList.contains('active')) {
+            s.style.color = '#fbbf24';
+          } else {
+            s.style.color = '#d1d5db';
+          }
+        });
+      });
+    });
+
+    // 提交事件
+    submitBtn.addEventListener('click', () => {
+      const features = Array.from(modal.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      const suggestion = modal.querySelector('textarea').value;
+
+      // 保存反馈数据
+      const feedback = {
+        rating: selectedRating,
+        features: features,
+        suggestion: suggestion,
+        timestamp: new Date().toISOString(),
+        url: window.location.href
+      };
+
+      // 保存到本地存储
+      const existingFeedback = JSON.parse(localStorage.getItem('userFeedback') || '[]');
+      existingFeedback.push(feedback);
+      localStorage.setItem('userFeedback', JSON.stringify(existingFeedback));
+
+      // 显示感谢消息
+      modal.innerHTML = `
+        <div class="survey-backdrop" onclick="this.parentElement.remove()"></div>
+        <div class="survey-content">
+          <div class="survey-header">
+            <h3><i class="fas fa-check-circle" style="color: #10b981;"></i> 感谢您的反馈！</h3>
+          </div>
+          <div class="survey-body" style="text-align: center;">
+            <p>您的宝贵意见将帮助我们改进网站体验。</p>
+            <button class="btn-primary" onclick="this.closest('.satisfaction-survey-modal').remove()">
+              关闭
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 3秒后自动关闭
+      setTimeout(() => {
+        if (modal.parentElement) {
+          modal.remove();
+        }
+      }, 3000);
+
+      console.log('用户反馈已保存:', feedback);
+    });
+  }
+
   // 离线支持
   setupOfflineSupport() {
     if ('serviceWorker' in navigator) {
