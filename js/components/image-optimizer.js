@@ -191,7 +191,192 @@ class ImageOptimizer {
     // 图片压缩
     this.setupImageCompression();
   }
-  
+
+  // 设置图片压缩功能
+  setupImageCompression() {
+    // 创建Canvas用于图片压缩
+    this.compressionCanvas = document.createElement('canvas');
+    this.compressionCtx = this.compressionCanvas.getContext('2d');
+
+    // 压缩配置
+    this.compressionConfig = {
+      maxWidth: 1920,
+      maxHeight: 1080,
+      quality: 0.8,
+      format: 'image/jpeg'
+    };
+
+    // 监听文件上传事件
+    this.setupFileUploadCompression();
+
+    // 监听图片拖拽事件
+    this.setupDragDropCompression();
+
+    console.log('✅ 图片压缩功能已启用');
+  }
+
+  // 设置文件上传压缩
+  setupFileUploadCompression() {
+    // 监听所有文件输入
+    document.addEventListener('change', (e) => {
+      if (e.target.type === 'file' && e.target.accept && e.target.accept.includes('image')) {
+        this.handleFileCompression(e.target.files);
+      }
+    });
+  }
+
+  // 设置拖拽上传压缩
+  setupDragDropCompression() {
+    // 防止默认拖拽行为
+    document.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    document.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const files = Array.from(e.dataTransfer.files).filter(file =>
+        file.type.startsWith('image/')
+      );
+
+      if (files.length > 0) {
+        this.handleFileCompression(files);
+      }
+    });
+  }
+
+  // 处理文件压缩
+  async handleFileCompression(files) {
+    for (const file of files) {
+      if (file.type.startsWith('image/')) {
+        try {
+          const compressedFile = await this.compressImage(file);
+          console.log(`图片压缩完成: ${file.name}`);
+          console.log(`原始大小: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+          console.log(`压缩后: ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+          console.log(`压缩率: ${((1 - compressedFile.size / file.size) * 100).toFixed(1)}%`);
+        } catch (error) {
+          console.error('图片压缩失败:', error);
+        }
+      }
+    }
+  }
+
+  // 压缩图片
+  compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = this.compressionCanvas;
+      const ctx = this.compressionCtx;
+
+      img.onload = () => {
+        // 计算压缩后的尺寸
+        const { width, height } = this.calculateCompressedSize(
+          img.width,
+          img.height
+        );
+
+        // 设置Canvas尺寸
+        canvas.width = width;
+        canvas.height = height;
+
+        // 绘制压缩后的图片
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // 转换为Blob
+        canvas.toBlob((blob) => {
+          if (blob) {
+            // 创建新的File对象
+            const compressedFile = new File(
+              [blob],
+              file.name,
+              {
+                type: this.compressionConfig.format,
+                lastModified: Date.now()
+              }
+            );
+            resolve(compressedFile);
+          } else {
+            reject(new Error('图片压缩失败'));
+          }
+        }, this.compressionConfig.format, this.compressionConfig.quality);
+      };
+
+      img.onerror = () => {
+        reject(new Error('图片加载失败'));
+      };
+
+      // 加载图片
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  // 计算压缩后的尺寸
+  calculateCompressedSize(originalWidth, originalHeight) {
+    const { maxWidth, maxHeight } = this.compressionConfig;
+
+    let width = originalWidth;
+    let height = originalHeight;
+
+    // 按比例缩放
+    if (width > maxWidth) {
+      height = (height * maxWidth) / width;
+      width = maxWidth;
+    }
+
+    if (height > maxHeight) {
+      width = (width * maxHeight) / height;
+      height = maxHeight;
+    }
+
+    return { width: Math.round(width), height: Math.round(height) };
+  }
+
+  // 批量压缩图片
+  async compressMultipleImages(files) {
+    const results = [];
+
+    for (const file of files) {
+      try {
+        const compressed = await this.compressImage(file);
+        results.push({
+          original: file,
+          compressed: compressed,
+          compressionRatio: ((1 - compressed.size / file.size) * 100).toFixed(1)
+        });
+      } catch (error) {
+        results.push({
+          original: file,
+          error: error.message
+        });
+      }
+    }
+
+    return results;
+  }
+
+  // 设置压缩质量
+  setCompressionQuality(quality) {
+    this.compressionConfig.quality = Math.max(0.1, Math.min(1.0, quality));
+    console.log(`压缩质量设置为: ${(this.compressionConfig.quality * 100).toFixed(0)}%`);
+  }
+
+  // 设置最大尺寸
+  setMaxDimensions(maxWidth, maxHeight) {
+    this.compressionConfig.maxWidth = maxWidth;
+    this.compressionConfig.maxHeight = maxHeight;
+    console.log(`最大尺寸设置为: ${maxWidth}x${maxHeight}`);
+  }
+
+  // 获取压缩统计
+  getCompressionStats() {
+    return {
+      config: this.compressionConfig,
+      supportsWebP: this.supportsWebP,
+      canvasSupported: !!this.compressionCanvas
+    };
+  }
+
   // WebP支持检测
   setupWebPSupport() {
     this.supportsWebP = false;

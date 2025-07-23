@@ -8,26 +8,22 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/admin.html',
-  '/css/tailwind.min.css',
-  '/js/app.js',
+  '/css/production-styles.css',
+  '/css/enhanced-styles.css',
+  '/js/app-simple.js',
+  '/js/firebase-config.js',
   '/js/components/ui-enhancements.js',
   '/js/components/ux-optimizer.js',
+  '/js/components/responsive-navigation.js',
+  '/js/components/image-optimizer.js',
+  '/js/components/click-handlers.js',
   '/js/components/search-system.js',
   '/js/components/comment-system.js',
   '/js/admin/admin-main.js',
-  '/js/admin/profile-manager.js',
-  '/js/admin/article-manager.js',
-  '/js/admin/photography-manager.js',
-  '/js/admin/comment-manager.js',
-  '/js/admin/settings-manager.js',
-  '/js/admin/analytics-manager.js',
-  '/js/admin/advanced-editor.js',
   '/js/security/admin-auth.js',
   '/js/security/secret-access.js',
-  '/js/database/firebase-config.js',
-  '/js/database/database-service.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap'
 ];
 
 // 安装事件
@@ -88,23 +84,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // 跳过Firebase相关请求（实时数据）
-  if (url.hostname.includes('firebaseio.com') || 
+  // 跳过Firebase相关请求（避免跟踪防护冲突）
+  if (url.hostname.includes('firebase') ||
+      url.hostname.includes('gstatic.com') ||
       url.hostname.includes('googleapis.com') ||
-      url.pathname.includes('/api/')) {
-    event.respondWith(
-      fetch(request)
-        .catch(() => {
-          return new Response(
-            JSON.stringify({ error: '网络连接失败，请检查网络设置' }),
-            {
-              status: 503,
-              statusText: 'Service Unavailable',
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-        })
-    );
+      url.hostname.includes('firebaseio.com') ||
+      url.pathname.includes('/api/') ||
+      url.pathname.includes('firebase')) {
+    // 直接让浏览器处理这些请求，不进行缓存
     return;
   }
   
