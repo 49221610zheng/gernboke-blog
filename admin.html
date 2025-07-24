@@ -1022,10 +1022,110 @@
 
   <!-- 安全认证系统 -->
   <script src="js/security/admin-auth.js"></script>
+  <script src="js/security/frontend-backend-bridge.js"></script>
+
+  <!-- 管理后台增强安全检测 -->
+  <script>
+    // 检查是否通过隐藏入口访问
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (token) {
+        // 验证来自隐藏入口的令牌
+        try {
+          const decoded = atob(token);
+          const [timestamp, random, type] = decoded.split('-');
+
+          if (type === 'admin' && (Date.now() - parseInt(timestamp)) < 300000) { // 5分钟有效期
+            console.log('✅ 通过隐藏入口访问，令牌验证成功');
+            sessionStorage.setItem('hiddenAdminAccess', 'true');
+
+            // 显示特殊管理功能
+            document.body.classList.add('hidden-admin-mode');
+
+            // 移除URL中的令牌参数
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            console.warn('⚠️ 令牌已过期或无效');
+          }
+        } catch (error) {
+          console.error('❌ 令牌解析失败:', error);
+        }
+      }
+
+      // 检查是否有隐藏管理权限
+      const hiddenAccess = sessionStorage.getItem('hiddenAdminAccess');
+      if (hiddenAccess === 'true') {
+        enableHiddenAdminFeatures();
+      }
+    });
+
+    function enableHiddenAdminFeatures() {
+      console.log('🔓 启用隐藏管理功能');
+
+      // 添加隐藏管理功能的样式
+      const style = document.createElement('style');
+      style.textContent = `
+        .hidden-admin-mode header {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-bottom: 3px solid #ffd700;
+          position: relative;
+        }
+
+        .hidden-admin-mode header::after {
+          content: '🔐 隐藏管理模式';
+          position: absolute;
+          top: 10px;
+          right: 20px;
+          background: rgba(255, 215, 0, 0.2);
+          color: #ffd700;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: bold;
+        }
+
+        .hidden-admin-feature {
+          border-left: 4px solid #ffd700;
+          background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+        }
+
+        .hidden-admin-badge {
+          background: linear-gradient(135deg, #ffd700, #ffed4e);
+          color: #1a202c;
+          padding: 2px 6px;
+          border-radius: 10px;
+          font-size: 10px;
+          font-weight: bold;
+          margin-left: 8px;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // 添加隐藏功能标识
+      setTimeout(() => {
+        const adminCards = document.querySelectorAll('.card');
+        adminCards.forEach(card => {
+          card.classList.add('hidden-admin-feature');
+        });
+
+        // 在侧边栏标题中添加标识
+        const sidebarTitle = document.querySelector('aside h1');
+        if (sidebarTitle) {
+          const badge = document.createElement('span');
+          badge.className = 'hidden-admin-badge';
+          badge.textContent = 'HIDDEN';
+          sidebarTitle.appendChild(badge);
+        }
+      }, 1000);
+    }
+  </script>
 
   <!-- 管理后台核心组件 -->
   <script src="js/admin/content-manager.js"></script>
   <script src="js/admin/page-generator.js"></script>
+  <script src="js/security/admin-data-sync.js"></script>
 
   <!-- 管理后台应用 -->
   <script src="js/admin/admin-simple.js"></script>
