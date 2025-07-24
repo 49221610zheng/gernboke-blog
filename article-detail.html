@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章详情 - 光影与代码</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+            dark: '#1D2129',
+            light: '#F2F3F5',
+            'gray-medium': '#86909C'
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Montserrat', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    .article-content {
+      line-height: 1.8;
+    }
+    .article-content h1, .article-content h2, .article-content h3 {
+      margin: 2rem 0 1rem 0;
+      font-weight: 600;
+    }
+    .article-content h1 { font-size: 2rem; }
+    .article-content h2 { font-size: 1.5rem; }
+    .article-content h3 { font-size: 1.25rem; }
+    .article-content p { margin: 1rem 0; }
+    .article-content ul, .article-content ol { margin: 1rem 0; padding-left: 2rem; }
+    .article-content li { margin: 0.5rem 0; }
+    .article-content code {
+      background: #f3f4f6;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+    }
+    .article-content pre {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .article-content blockquote {
+      border-left: 4px solid #165DFF;
+      padding-left: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body class="font-inter bg-gray-50">
+  <!-- 导航栏 -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <i class="fa fa-camera-retro"></i>
+          </div>
+          <span class="text-xl font-bold font-display">光影与代码</span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="/" class="text-gray-600 hover:text-primary transition-colors">首页</a>
+          <a href="/#photography" class="text-gray-600 hover:text-primary transition-colors">摄影作品</a>
+          <a href="/#tech" class="text-gray-600 hover:text-primary transition-colors">技术分享</a>
+          <a href="/#about" class="text-gray-600 hover:text-primary transition-colors">关于我</a>
+        </nav>
+        
+        <button class="md:hidden text-dark hover:text-primary" id="menu-toggle">
+          <i class="fa fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 文章内容 -->
+  <main class="py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+      <!-- 返回按钮 -->
+      <div class="mb-6">
+        <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+          <i class="fa fa-arrow-left"></i>
+          <span>返回首页</span>
+        </a>
+      </div>
+      
+      <!-- 文章头部 -->
+      <article class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="aspect-[16/9] overflow-hidden">
+          <img id="article-image" src="https://picsum.photos/id/0/1200/600" alt="文章封面" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="p-8">
+          <!-- 文章元信息 -->
+          <div class="flex flex-wrap items-center gap-3 mb-6">
+            <span id="article-category" class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">Python</span>
+            <span class="text-xs bg-gray-200 text-gray-600 px-3 py-1 rounded-full">图像处理</span>
+            <span class="text-sm text-gray-medium">2023-06-12</span>
+            <span class="text-sm text-gray-medium">8分钟阅读</span>
+          </div>
+          
+          <!-- 文章标题 -->
+          <h1 id="article-title" class="text-3xl md:text-4xl font-bold mb-6 font-display">使用Python批量处理RAW照片</h1>
+          
+          <!-- 作者信息 -->
+          <div class="flex items-center gap-4 mb-8 pb-8 border-b">
+            <img src="https://picsum.photos/id/64/64/64" alt="作者头像" class="w-12 h-12 rounded-full">
+            <div>
+              <h3 class="font-medium">摄影程序员</h3>
+              <p class="text-sm text-gray-medium">全栈开发者 & 摄影爱好者</p>
+            </div>
+          </div>
+          
+          <!-- 文章内容 -->
+          <div id="article-content" class="article-content prose max-w-none">
+            <p class="text-lg text-gray-700 mb-6">
+              在数字摄影时代，RAW格式照片因其包含更多图像信息而备受专业摄影师青睐。然而，批量处理大量RAW照片往往是一个耗时的过程。本文将介绍如何使用Python的RawPy库来自动化这一过程。
+            </p>
+            
+            <h2>什么是RAW格式？</h2>
+            <p>
+              RAW格式是数码相机传感器直接输出的原始数据，未经过任何处理。与JPEG相比，RAW文件包含更多的色彩信息和动态范围，为后期处理提供了更大的空间。
+            </p>
+            
+            <h2>安装必要的库</h2>
+            <p>首先，我们需要安装RawPy库和其他依赖：</p>
+            <pre><code>pip install rawpy imageio numpy opencv-python</code></pre>
+            
+            <h2>基础RAW处理代码</h2>
+            <p>以下是一个简单的RAW照片处理示例：</p>
+            <pre><code>import rawpy
+import imageio
+import numpy as np
+import cv2
+import os
+
+def process_raw_image(raw_path, output_path):
+    """处理单张RAW图片"""
+    with rawpy.imread(raw_path) as raw:
+        # 使用默认参数处理RAW数据
+        rgb = raw.postprocess()
+        
+        # 保存为JPEG格式
+        imageio.imsave(output_path, rgb)
+        print(f"已处理: {raw_path} -> {output_path}")
+
+def batch_process_raw(input_dir, output_dir):
+    """批量处理RAW图片"""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    raw_extensions = ['.cr2', '.nef', '.arw', '.dng']
+    
+    for filename in os.listdir(input_dir):
+        if any(filename.lower().endswith(ext) for ext in raw_extensions):
+            raw_path = os.path.join(input_dir, filename)
+            output_filename = os.path.splitext(filename)[0] + '.jpg'
+            output_path = os.path.join(output_dir, output_filename)
+            
+            try:
+                process_raw_image(raw_path, output_path)
+            except Exception as e:
+                print(f"处理失败 {filename}: {e}")
+
+# 使用示例
+input_directory = "raw_photos"
+output_directory = "processed_photos"
+batch_process_raw(input_directory, output_directory)</code></pre>
+            
+            <h2>高级处理参数</h2>
+            <p>RawPy提供了丰富的参数来控制RAW处理过程：</p>
+            <ul>
+              <li><strong>白平衡调整</strong>：控制色温和色调</li>
+              <li><strong>曝光补偿</strong>：调整图像亮度</li>
+              <li><strong>高光恢复</strong>：恢复过曝区域的细节</li>
+              <li><strong>阴影提升</strong>：提亮暗部区域</li>
+            </ul>
+            
+            <blockquote>
+              <p>提示：在批量处理之前，建议先用少量照片测试参数设置，确保输出效果符合预期。</p>
+            </blockquote>
+            
+            <h2>性能优化建议</h2>
+            <p>处理大量RAW文件时，可以考虑以下优化策略：</p>
+            <ol>
+              <li>使用多线程或多进程并行处理</li>
+              <li>合理设置输出质量和尺寸</li>
+              <li>使用SSD存储以提高I/O性能</li>
+              <li>监控内存使用，避免内存溢出</li>
+            </ol>
+            
+            <h2>总结</h2>
+            <p>
+              通过Python和RawPy库，我们可以轻松实现RAW照片的批量处理，大大提高工作效率。这种自动化方法特别适合需要处理大量照片的摄影师和图像处理专业人员。
+            </p>
+            <p>
+              在实际应用中，可以根据具体需求调整处理参数，甚至结合机器学习技术来实现更智能的图像处理。
+            </p>
+          </div>
+          
+          <!-- 文章标签 -->
+          <div class="mt-8 pt-8 border-t">
+            <h3 class="font-medium mb-4">相关标签</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">Python</span>
+              <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">图像处理</span>
+              <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">RAW</span>
+              <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">摄影</span>
+              <span class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">自动化</span>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 相关文章 -->
+      <section class="mt-12">
+        <h2 class="text-2xl font-bold mb-6 font-display">相关文章</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <a href="#" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <img src="https://picsum.photos/id/180/400/200" alt="相关文章" class="w-full h-48 object-cover">
+            <div class="p-6">
+              <h3 class="font-semibold mb-2">JavaScript异步编程全解析</h3>
+              <p class="text-sm text-gray-medium">从回调函数到Promise，再到async/await...</p>
+            </div>
+          </a>
+          <a href="#" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <img src="https://picsum.photos/id/96/400/200" alt="相关文章" class="w-full h-48 object-cover">
+            <div class="p-6">
+              <h3 class="font-semibold mb-2">摄影作品管理系统设计思路</h3>
+              <p class="text-sm text-gray-medium">分享如何设计和开发一个个人摄影作品管理系统...</p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white py-8 mt-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-gray-400">&copy; 2023 光影与代码. 保留所有权利.</p>
+    </div>
+  </footer>
+  
+  <script src="js/article-detail.js"></script>
+</body>
+</html>
