@@ -1030,6 +1030,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
+      let hasValidAccess = false;
 
       if (token) {
         // 验证来自隐藏入口的令牌
@@ -1040,6 +1041,7 @@
           if (type === 'admin' && (Date.now() - parseInt(timestamp)) < 300000) { // 5分钟有效期
             console.log('✅ 通过隐藏入口访问，令牌验证成功');
             sessionStorage.setItem('hiddenAdminAccess', 'true');
+            hasValidAccess = true;
 
             // 显示特殊管理功能
             document.body.classList.add('hidden-admin-mode');
@@ -1057,7 +1059,13 @@
       // 检查是否有隐藏管理权限
       const hiddenAccess = sessionStorage.getItem('hiddenAdminAccess');
       if (hiddenAccess === 'true') {
+        hasValidAccess = true;
         enableHiddenAdminFeatures();
+      }
+
+      // 如果没有有效访问权限，阻止访问
+      if (!hasValidAccess) {
+        blockUnauthorizedAccess();
       }
     });
 
@@ -1119,6 +1127,67 @@
           sidebarTitle.appendChild(badge);
         }
       }, 1000);
+    }
+
+    function blockUnauthorizedAccess() {
+      console.warn('🚫 未授权访问被阻止');
+
+      // 隐藏所有内容
+      document.body.style.display = 'none';
+
+      // 创建访问被拒绝页面
+      const blockedPage = document.createElement('div');
+      blockedPage.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Inter', sans-serif;
+          color: white;
+          z-index: 10000;
+        ">
+          <div style="text-align: center; max-width: 500px; padding: 40px;">
+            <div style="font-size: 120px; margin-bottom: 20px;">🔒</div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 20px; font-weight: 600;">访问被拒绝</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; line-height: 1.6;">
+              此页面需要特殊权限才能访问。<br>
+              请通过正确的方式获取访问权限。
+            </p>
+            <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+              <p style="font-size: 0.9rem; opacity: 0.8;">
+                💡 提示：管理功能已完全隐藏<br>
+                需要通过特殊方式激活才能访问
+              </p>
+            </div>
+            <button onclick="window.location.href='/'" style="
+              background: rgba(255,255,255,0.2);
+              border: 2px solid rgba(255,255,255,0.3);
+              color: white;
+              padding: 12px 30px;
+              border-radius: 25px;
+              font-size: 1rem;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              backdrop-filter: blur(10px);
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+              🏠 返回首页
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(blockedPage);
+
+      // 3秒后自动跳转到首页
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 5000);
     }
   </script>
 

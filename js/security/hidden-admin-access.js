@@ -727,7 +727,15 @@ class HiddenAdminAccess {
 
   openFullAdmin() {
     // 在新标签页中打开完整的管理后台
-    const adminUrl = '/admin.html?token=' + this.generateSecureToken();
+    const token = this.generateSecureToken();
+    const adminUrl = '/admin.html?token=' + token;
+
+    // 记录访问日志
+    console.log('🔐 生成管理后台访问令牌:', token.substring(0, 20) + '...');
+
+    // 设置访问权限标记
+    sessionStorage.setItem('adminTokenGenerated', Date.now().toString());
+
     window.open(adminUrl, '_blank');
     this.closeAdminModal();
   }
@@ -736,7 +744,54 @@ class HiddenAdminAccess {
     // 生成安全令牌
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2);
+    const userAgent = navigator.userAgent.substring(0, 50);
+    const sessionId = this.getSessionId();
+
+    // 记录令牌生成日志
+    this.logAdminAccess('token_generated', {
+      timestamp,
+      sessionId,
+      userAgent,
+      ip: 'hidden' // 前端无法获取真实IP
+    });
+
     return btoa(`${timestamp}-${random}-admin`);
+  }
+
+  getSessionId() {
+    let sessionId = sessionStorage.getItem('adminSessionId');
+    if (!sessionId) {
+      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+      sessionStorage.setItem('adminSessionId', sessionId);
+    }
+    return sessionId;
+  }
+
+  logAdminAccess(action, data) {
+    const logEntry = {
+      action,
+      timestamp: Date.now(),
+      data,
+      url: window.location.href
+    };
+
+    // 存储到本地日志
+    const logs = JSON.parse(localStorage.getItem('adminAccessLogs') || '[]');
+    logs.push(logEntry);
+
+    // 只保留最近100条日志
+    if (logs.length > 100) {
+      logs.splice(0, logs.length - 100);
+    }
+
+    localStorage.setItem('adminAccessLogs', JSON.stringify(logs));
+
+    // 发送到后端（如果可用）
+    if (window.frontendBackendBridge) {
+      window.frontendBackendBridge.sendSecureMessage('admin_log', logEntry);
+    }
+
+    console.log('📝 管理访问日志:', action, data);
   }
 
   showSystemStatus() {
