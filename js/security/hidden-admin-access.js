@@ -21,18 +21,174 @@ class HiddenAdminAccess {
   init() {
     // 监听键盘事件
     document.addEventListener('keydown', (e) => this.handleKeyPress(e));
-    
+
     // 监听鼠标活动以重置超时
     document.addEventListener('mousemove', () => this.updateActivity());
     document.addEventListener('click', () => this.updateActivity());
-    
+
     // 定期检查会话超时
     setInterval(() => this.checkSessionTimeout(), 60000); // 每分钟检查一次
-    
+
     // 检查是否已有激活的会话
     this.checkExistingSession();
-    
+
+    // 添加额外的隐藏入口方式
+    this.setupAlternativeEntries();
+
     console.log('🔐 隐藏管理端口系统已初始化');
+  }
+
+  setupAlternativeEntries() {
+    // 方式1: 点击Logo 5次快速激活
+    let logoClickCount = 0;
+    let logoClickTimer = null;
+
+    const logo = document.querySelector('header a[href="#"]');
+    if (logo) {
+      logo.addEventListener('click', (e) => {
+        logoClickCount++;
+
+        if (logoClickTimer) {
+          clearTimeout(logoClickTimer);
+        }
+
+        logoClickTimer = setTimeout(() => {
+          logoClickCount = 0;
+        }, 2000); // 2秒内点击5次
+
+        if (logoClickCount >= 5) {
+          e.preventDefault();
+          this.activateAdminPortal();
+          logoClickCount = 0;
+        }
+      });
+    }
+
+    // 方式2: 在页脚版权信息上双击
+    const footer = document.querySelector('footer');
+    if (footer) {
+      const copyright = footer.querySelector('p');
+      if (copyright) {
+        copyright.addEventListener('dblclick', () => {
+          this.activateAdminPortal();
+        });
+
+        // 添加隐藏的样式提示
+        copyright.style.cursor = 'default';
+        copyright.title = '';
+      }
+    }
+
+    // 方式3: URL参数激活
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true' || urlParams.get('debug') === 'true') {
+      this.activateAdminPortal();
+      // 清除URL参数
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // 方式4: 特殊时间激活（开发者彩蛋）
+    const now = new Date();
+    if (now.getHours() === 0 && now.getMinutes() === 0) { // 午夜时分
+      console.log('🌙 午夜彩蛋：管理端口自动激活');
+      setTimeout(() => {
+        this.activateAdminPortal();
+      }, 3000);
+    }
+
+    console.log('🔐 额外隐藏入口已设置');
+
+    // 方式5: 开发者调试模式（Ctrl+Shift+Alt+D）
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'D') {
+        this.toggleDebugMode();
+      }
+    });
+  }
+
+  toggleDebugMode() {
+    const isDebugMode = document.body.classList.contains('debug-mode');
+
+    if (isDebugMode) {
+      document.body.classList.remove('debug-mode');
+      console.log('🔧 调试模式已关闭');
+    } else {
+      document.body.classList.add('debug-mode');
+      console.log('🔧 调试模式已开启 - 隐藏入口现在可见');
+
+      // 显示调试信息
+      this.showDebugInfo();
+    }
+  }
+
+  showDebugInfo() {
+    const debugInfo = document.createElement('div');
+    debugInfo.className = 'debug-info';
+    debugInfo.innerHTML = `
+      <div class="debug-content">
+        <h4>🔧 调试模式</h4>
+        <p>隐藏入口现在可见（左下角）</p>
+        <p>激活方式：</p>
+        <ul>
+          <li>Konami Code: ↑↑↓↓←→←→</li>
+          <li>Logo点击: 快速点击5次</li>
+          <li>页脚双击: 双击版权信息</li>
+          <li>URL参数: ?admin=true</li>
+        </ul>
+        <button onclick="this.parentElement.parentElement.remove()">关闭</button>
+      </div>
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .debug-info {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        z-index: 10000;
+        font-family: monospace;
+        max-width: 400px;
+      }
+
+      .debug-content h4 {
+        margin: 0 0 10px 0;
+        color: #00ff00;
+      }
+
+      .debug-content ul {
+        margin: 10px 0;
+        padding-left: 20px;
+      }
+
+      .debug-content li {
+        margin: 5px 0;
+        font-size: 12px;
+      }
+
+      .debug-content button {
+        background: #333;
+        color: white;
+        border: 1px solid #666;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(debugInfo);
+
+    // 5秒后自动关闭
+    setTimeout(() => {
+      if (debugInfo.parentElement) {
+        debugInfo.remove();
+      }
+    }, 10000);
   }
 
   handleKeyPress(event) {
@@ -96,8 +252,9 @@ class HiddenAdminAccess {
           <i class="fa fa-unlock-alt"></i>
         </div>
         <div class="notification-text">
-          <h4>管理端口已激活</h4>
-          <p>隐藏管理功能现已可用</p>
+          <h4>🔐 隐藏管理端口已激活</h4>
+          <p>管理功能现已可用，完全隐藏模式</p>
+          <small>无可见入口，仅通过隐藏方式访问</small>
         </div>
         <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
           <i class="fa fa-times"></i>
@@ -188,75 +345,81 @@ class HiddenAdminAccess {
   }
 
   createHiddenAdminEntry() {
-    // 创建隐藏的管理入口按钮
+    // 创建完全隐藏的管理入口
     const adminEntry = document.createElement('div');
     adminEntry.id = 'hidden-admin-entry';
     adminEntry.className = 'hidden-admin-entry';
     adminEntry.innerHTML = `
-      <button class="admin-entry-btn" onclick="window.hiddenAdmin.openAdminPanel()">
-        <i class="fa fa-cog"></i>
-        <span>管理面板</span>
-      </button>
+      <div class="admin-entry-invisible" onclick="window.hiddenAdmin.openAdminPanel()" title="隐藏管理入口">
+        <!-- 完全透明的可点击区域 -->
+      </div>
     `;
 
-    // 添加样式
+    // 添加完全隐藏的样式
     const style = document.createElement('style');
     style.textContent = `
       .hidden-admin-entry {
         position: fixed;
-        bottom: 20px;
-        left: 20px;
+        bottom: 0;
+        left: 0;
         z-index: 9999;
-        opacity: 0;
-        animation: fadeInUp 0.5s ease-out 1s forwards;
+        pointer-events: auto;
       }
 
-      .admin-entry-btn {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        color: white;
+      .admin-entry-invisible {
+        width: 50px;
+        height: 50px;
+        background: transparent;
         border: none;
-        padding: 12px 20px;
-        border-radius: 25px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-        transition: all 0.3s ease;
+        cursor: default;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
-      .admin-entry-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
-        background: linear-gradient(135deg, #ff5252, #d63031);
+      /* 只在悬停时显示微弱提示 */
+      .admin-entry-invisible:hover {
+        opacity: 0.05;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
       }
 
-      .admin-entry-btn i {
-        animation: rotate 2s linear infinite;
+      /* 开发模式下的可见提示 */
+      .debug-mode .admin-entry-invisible {
+        opacity: 0.3;
+        background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,255,0,0.1));
+        border: 1px dashed rgba(255,255,255,0.3);
       }
 
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .debug-mode .admin-entry-invisible:hover {
+        opacity: 0.6;
       }
 
-      @keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+      /* 激活状态的微弱指示 */
+      .admin-activated .hidden-admin-entry::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 3px;
+        height: 3px;
+        background: rgba(0, 255, 0, 0.3);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.5); }
       }
     `;
     document.head.appendChild(style);
     document.body.appendChild(adminEntry);
 
+    // 添加激活状态指示
+    document.body.classList.add('admin-activated');
+
     this.adminPortal = adminEntry;
+
+    console.log('🔐 隐藏管理入口已创建（完全不可见模式）');
   }
 
   openAdminPanel() {
@@ -615,20 +778,28 @@ class HiddenAdminAccess {
       this.isActivated = false;
       sessionStorage.removeItem('adminPortalActivated');
       sessionStorage.removeItem('adminActivationTime');
-      
+
       // 移除管理入口
       if (this.adminPortal) {
         this.adminPortal.remove();
         this.adminPortal = null;
       }
-      
+
+      // 移除激活状态指示
+      document.body.classList.remove('admin-activated');
+      document.body.classList.remove('debug-mode');
+
       // 关闭模态框
       this.closeAdminModal();
-      
+
       // 重置用户输入
       this.userInput = [];
-      
-      console.log('🔒 管理端口已停用');
+
+      // 清除所有相关的DOM元素
+      const notifications = document.querySelectorAll('.admin-activation-notification');
+      notifications.forEach(notification => notification.remove());
+
+      console.log('🔒 管理端口已完全停用，所有痕迹已清除');
     }
   }
 
