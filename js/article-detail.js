@@ -47,20 +47,39 @@ class ArticleDetail {
     // 从URL获取文章ID
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get('id') || 'python-raw-processing';
-    
+
+    // 尝试从主页内容加载器获取数据
+    this.loadDynamicArticles();
+
     // 加载文章内容
     this.loadArticle(articleId);
-    
+
     // 设置移动端菜单
     this.setupMobileMenu();
-    
+
     // 设置滚动进度条
     this.setupScrollProgress();
-    
+
     // 设置代码高亮
     this.setupCodeHighlight();
-    
+
     console.log('📖 文章详情页面已初始化');
+  }
+
+  loadDynamicArticles() {
+    try {
+      // 从localStorage加载管理端更新的文章
+      const homepageData = localStorage.getItem('homepage_content');
+      if (homepageData) {
+        const data = JSON.parse(homepageData);
+        if (data.articles) {
+          this.articles = { ...this.articles, ...data.articles };
+          console.log('📄 从管理端加载文章数据');
+        }
+      }
+    } catch (error) {
+      console.error('❌ 动态文章加载失败:', error);
+    }
   }
 
   loadArticle(articleId) {

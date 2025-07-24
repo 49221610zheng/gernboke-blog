@@ -62,17 +62,36 @@ class PhotoDetail {
     // 从URL获取照片ID
     const urlParams = new URLSearchParams(window.location.search);
     const photoId = urlParams.get('id') || 'city-night';
-    
+
+    // 尝试从主页内容加载器获取数据
+    this.loadDynamicPhotos();
+
     // 加载照片内容
     this.loadPhoto(photoId);
-    
+
     // 设置移动端菜单
     this.setupMobileMenu();
-    
+
     // 设置键盘导航
     this.setupKeyboardNavigation();
-    
+
     console.log('📸 照片详情页面已初始化');
+  }
+
+  loadDynamicPhotos() {
+    try {
+      // 从localStorage加载管理端更新的照片
+      const homepageData = localStorage.getItem('homepage_content');
+      if (homepageData) {
+        const data = JSON.parse(homepageData);
+        if (data.photos) {
+          this.photos = { ...this.photos, ...data.photos };
+          console.log('📸 从管理端加载照片数据');
+        }
+      }
+    } catch (error) {
+      console.error('❌ 动态照片加载失败:', error);
+    }
   }
 
   loadPhoto(photoId) {
